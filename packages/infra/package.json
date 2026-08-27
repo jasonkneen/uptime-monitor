@@ -34,8 +34,10 @@
     ".": "./src/alchemy.run.ts"
   },
   "scripts": {
-    "infra:up": "nub exec ./src/alchemy.run.ts",
-    "infra:destroy": "nub exec ./src/alchemy.run.ts destroy",
+    "infra:up": "alchemy deploy ./src/alchemy.run.ts --stage dev",
+    "infra:destroy": "alchemy destroy ./src/alchemy.run.ts --stage dev",
+    "infra:plan": "alchemy plan ./src/alchemy.run.ts --stage dev",
+    "infra:dev": "alchemy dev ./src/alchemy.run.ts --stage dev",
     "db:create": "wrangler d1 execute solstatus-local --local --command='SELECT 1' --cwd ../../ --config ./packages/infra/wrangler.jsonc",
     "db:create:prod": "wrangler d1 create solstatus-prod",
     "db:generate": "drizzle-kit generate",
@@ -52,7 +54,7 @@
     "@solstatus/api": "workspace:*",
     "@solstatus/app": "workspace:*",
     "@solstatus/common": "workspace:*",
-    "alchemy": "^0.43.0"
+    "alchemy": "2.0.0-beta.72"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250702.0",

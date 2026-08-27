@@ -3,7 +3,7 @@
 import type { endpointMonitorsSelectSchema } from "@solstatus/common/db"
 import { IconChevronDown, IconLayoutColumns, IconSearch, IconX } from "@tabler/icons-react"
 import type { Table } from "@tanstack/react-table"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "@/lib/navigation"
 import type * as React from "react"
 import { useDebouncedCallback } from "use-debounce"
 import type { z } from "zod"

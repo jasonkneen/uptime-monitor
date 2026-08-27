@@ -1,8 +1,8 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import { takeUniqueOrThrow, useDrizzle } from "@solstatus/common/db"
 import { EndpointMonitorsTable } from "@solstatus/common/db/schema"
 import { and, count, eq, like, sql } from "drizzle-orm"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { z } from "zod"
 import { createRoute } from "@/lib/api-utils"
 
@@ -25,7 +25,7 @@ const querySchema = z.object({
 })
 
 export const GET = createRoute.query(querySchema).handler(async (_request, context) => {
-  const { env } = getCloudflareContext()
+  const { env } = getWorkerEnv()
   const db = useDrizzle(env.DB)
 
   const { search, isRunning, checkIntervalMin, checkIntervalMax } = context.query

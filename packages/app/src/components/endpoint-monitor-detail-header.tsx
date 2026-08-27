@@ -7,7 +7,7 @@ import { ExternalLink, MoreVertical, Pause, Play, RefreshCw } from "lucide-react
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import type { z } from "zod"
-import { getInfraMetadata } from "@/app/actions/infraMetadata"
+import { getInfraMetadata } from "@/lib/infra-metadata"
 import { DEFAULT_TOAST_OPTIONS } from "@/lib/toasts"
 import { Badge } from "@/registry/new-york-v4/ui/badge"
 import { Button } from "@/registry/new-york-v4/ui/button"

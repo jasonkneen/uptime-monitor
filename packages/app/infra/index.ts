@@ -1,9 +1,14 @@
+import { dirname, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 import type { MonitorExecWorkerResource, MonitorTriggerWorkerResource } from "@solstatus/api/infra"
 import type { DBResource, SessionsStorageKVResource } from "@solstatus/common/infra"
-import alchemy from "alchemy"
-import { KVNamespace, Website } from "alchemy/cloudflare"
+import * as Cloudflare from "alchemy/Cloudflare"
 
-export async function createApp(
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const appRoot = resolve(__dirname, "..")
+
+export function createApp(
   resPrefix: string,
   db: DBResource,
   sessionsStorageKV: SessionsStorageKVResource,
@@ -13,49 +18,40 @@ export async function createApp(
   cloudflareAccountId: string,
 ) {
   const appName = `${resPrefix}-app`
-
-  const kvIncrementalCache = await KVNamespace(`${appName}-inc-cache`, {
-    title: `${appName}-inc-cache`,
-    adopt: true,
-  })
-
-  const app = await Website(appName, {
+  return Cloudflare.Website.Vite("app", {
     name: appName,
-    command: "nub run build:opennextjs",
-    main: ".open-next/worker.js",
-    assets: ".open-next/assets",
-    url: !fqdn,
-    compatibilityFlags: ["nodejs_compat"],
+    rootDir: appRoot,
+    compatibility: {
+      date: "2026-07-21",
+      flags: ["nodejs_compat"],
+    },
     observability: {
       enabled: true,
     },
-    wrangler: false,
-    ...(fqdn && {
-      domains: [
-        {
-          domainName: fqdn,
-          adopt: true,
-        },
-      ],
-    }),
-    bindings: {
+    dev: {
+      port: 3000,
+      strictPort: true,
+    },
+    ...(fqdn
+      ? {
+          domain: {
+            name: fqdn,
+          },
+          workersDev: false,
+        }
+      : {}),
+    env: {
       DB: db,
       SESSIONS_KV: sessionsStorageKV,
-      BETTER_AUTH_SECRET: alchemy.secret(process.env.BETTER_AUTH_SECRET),
+      BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET || "",
       MONITOR_EXEC: monitorExecWorker,
       MONITOR_TRIGGER_RPC: monitorTriggerWorker,
-      NEXT_INC_CACHE_KV: kvIncrementalCache,
-      MONITOR_EXEC_NAME: monitorExecWorker.name,
-      MONITOR_TRIGGER_NAME: monitorTriggerWorker.name,
+      MONITOR_EXEC_NAME: `${resPrefix}-monitor-exec`,
+      MONITOR_TRIGGER_NAME: `${resPrefix}-monitor-trigger`,
       CLOUDFLARE_ACCOUNT_ID: cloudflareAccountId,
+      VITE_APP_VERSION: process.env.VITE_APP_VERSION || "2.1.0-dev",
     },
   })
-
-  if (fqdn) {
-    console.log(`${appName}: https://${fqdn}`)
-  } else {
-    console.log(`${appName}: ${app.url}`)
-  }
-  return app
 }
+
 export type AppResource = Awaited<ReturnType<typeof createApp>>

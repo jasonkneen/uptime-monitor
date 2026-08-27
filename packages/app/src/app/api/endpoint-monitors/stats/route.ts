@@ -1,9 +1,9 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import { takeFirstOrNull, takeUniqueOrThrow, useDrizzle } from "@solstatus/common/db"
 import { EndpointMonitorsTable, UptimeChecksTable } from "@solstatus/common/db/schema"
 import { and, count, desc, eq, gt, isNotNull } from "drizzle-orm"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { createRoute } from "@/lib/api-utils"
 
 // TODO: re-enable this, but since we use createZodRoute this endpoint can't be rendered statically
@@ -19,7 +19,7 @@ import { createRoute } from "@/lib/api-utils"
  * @throws {NextResponse} 500 Internal Server Error on database errors
  */
 export const GET = createRoute.handler(async (_request, _context) => {
-  const { env } = getCloudflareContext()
+  const { env } = getWorkerEnv()
   const db = useDrizzle(env.DB)
 
   try {

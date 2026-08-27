@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { execSync } from "node:child_process"
+import { execFileSync } from "node:child_process"
 import { randomBytes } from "node:crypto"
 import fs from "node:fs"
 import path, { dirname } from "node:path"
@@ -31,6 +31,15 @@ const appendEnvValue = (key: string, value: string) => {
   fs.writeFileSync(envPath, envContent)
 }
 
+const alchemyCommandByPhase = {
+  up: "deploy",
+  deploy: "deploy",
+  destroy: "destroy",
+  read: "plan",
+  plan: "plan",
+  dev: "dev",
+} as const
+
 const main = Command.make(
   "solstatus",
   {
@@ -54,9 +63,9 @@ const main = Command.make(
       Flag.withDefault("dev"),
       Flag.withDescription("Deployment stage (default: dev)"),
     ),
-    phase: Flag.choice("phase", ["destroy", "up", "read"]).pipe(
+    phase: Flag.choice("phase", ["destroy", "up", "read", "deploy", "plan", "dev"]).pipe(
       Flag.withDefault("up" as const),
-      Flag.withDescription("Phase to execute"),
+      Flag.withDescription("Phase to execute (up/deploy, destroy, read/plan, dev)"),
     ),
     quiet: Flag.boolean("quiet").pipe(
       Flag.withDefault(false),
@@ -122,22 +131,22 @@ const main = Command.make(
         SECRET_ALCHEMY_PASSPHRASE: secretAlchemyPassphrase,
         BETTER_AUTH_SECRET: betterAuthSecret,
         APP_NAME: config.appName,
+        STAGE: config.stage,
         ...(fqdnValue && { FQDN: fqdnValue }),
       }
 
-      const args = [config.phase, config.stage]
+      const alchemyRunPath = path.join(__dirname, "../packages/infra/src/alchemy.run.ts")
+      const alchemyCommand = alchemyCommandByPhase[config.phase]
+      const args = [alchemyCommand, alchemyRunPath, "--stage", config.stage]
       if (config.quiet) {
         args.push("--quiet")
       }
 
-      const alchemyRunPath = path.join(__dirname, "../packages/infra/src/alchemy.run.ts")
-      const command = `tsx ${alchemyRunPath} ${args.join(" ")}`
-
       try {
-        execSync(command, {
+        execFileSync("nub", ["exec", "alchemy", ...args], {
           env,
           stdio: "inherit",
-          cwd: __dirname,
+          cwd: path.join(__dirname, ".."),
         })
         yield* Console.log("\n✅ Command executed successfully")
       } catch (error) {
@@ -145,7 +154,11 @@ const main = Command.make(
         return yield* Effect.fail(1)
       }
     }),
-).pipe(Command.withDescription("CLI wrapper for SolStatus infrastructure management"))
+).pipe(
+  Command.withDescription(
+    "CLI wrapper for SolStatus infrastructure. Uses Effect 4 `effect/unstable/cli` because `@effect/cli` still peers Effect 3.",
+  ),
+)
 
 Command.run(main, {
   version: packageJson.version,

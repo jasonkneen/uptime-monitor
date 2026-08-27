@@ -1,9 +1,9 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import { useDrizzle } from "@solstatus/common/db"
 import { UptimeChecksTable } from "@solstatus/common/db/schema"
 import { and, desc, eq, sql } from "drizzle-orm"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { createRoute } from "@/lib/api-utils"
 import { daysQuerySchema, idStringParamsSchema } from "@/lib/route-schemas"
 
@@ -21,7 +21,7 @@ export const GET = createRoute
   .params(idStringParamsSchema)
   .query(daysQuerySchema())
   .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
 
     const { days } = context.query

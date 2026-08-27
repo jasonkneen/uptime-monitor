@@ -39,6 +39,7 @@
     "cli": "tsx ./src/index.ts",
     "dev": "concurrently --kill-others --names \"API,APP\" --prefix-colors \"bgWhite,bgWhiteBright\" \"nub run dev:api\" \"wait-on http://localhost:8788 && nub run dev:app\"",
     "dev:app": "nub run --filter '@solstatus/app' dev",
+    "dev:app:mock": "nub run --filter '@solstatus/app' dev:mock",
     "dev:api": "nub run --filter '@solstatus/api' dev",
     "db:setup": "nub run --filter '@solstatus/infra' db:setup",
     "deploy:prod": "nub run deploy:prod:api && nub run deploy:prod:app",
@@ -61,6 +62,7 @@
   "dependencies": {
     "@effect/platform-node": "4.0.0-beta.107",
     "@solstatus/infra": "workspace:*",
+    "alchemy": "2.0.0-beta.72",
     "dotenv": "16.5.0",
     "effect": "4.0.0-beta.107"
   },
@@ -69,6 +71,7 @@
     "@mpsuesser/oxlint-plugin-effect": "0.2.2",
     "@oxlint/plugins": "1.79.0",
     "@types/node": "^24.12.4",
+    "anti-slop": "github:dmmulroy/anti-slop",
     "concurrently": "^9.2.0",
     "oxfmt": "^0.49.0",
     "oxlint": "1.79.0",
@@ -81,6 +84,9 @@
   },
   "overrides": {
     "@effect/platform-node": "4.0.0-beta.107",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "alchemy": "2.0.0-beta.72",
     "drizzle-kit": "1.0.0-rc.5-ab785fc",
     "drizzle-orm": "1.0.0-rc.5-ab785fc",
     "effect": "4.0.0-beta.107",

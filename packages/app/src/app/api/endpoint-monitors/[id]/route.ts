@@ -1,4 +1,4 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import {
   endpointMonitorsPatchSchema,
   type endpointMonitorsSelectSchema,
@@ -8,7 +8,7 @@ import {
 import { EndpointMonitorsTable } from "@solstatus/common/db/schema"
 import { eq } from "drizzle-orm"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import type { z } from "zod"
 import { createRoute } from "@/lib/api-utils"
 import { idStringParamsSchema } from "@/lib/route-schemas"
@@ -24,7 +24,7 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @throws {NextResponse} 500 Internal Server Error on database errors
  */
 export const GET = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
-  const { env } = getCloudflareContext()
+  const { env } = getWorkerEnv()
   const db = useDrizzle(env.DB)
 
   let endpointMonitor: z.infer<typeof endpointMonitorsSelectSchema> | undefined
@@ -68,7 +68,7 @@ export const PATCH = createRoute
   .params(idStringParamsSchema)
   .body(endpointMonitorsPatchSchema)
   .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
 
     const endpointMonitor: z.infer<typeof endpointMonitorsPatchSchema> = context.body
@@ -120,7 +120,7 @@ export const PATCH = createRoute
 export const DELETE = createRoute
   .params(idStringParamsSchema)
   .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
 
     try {

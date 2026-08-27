@@ -1,9 +1,9 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import { useDrizzle } from "@solstatus/common/db"
 import { UptimeChecksTable } from "@solstatus/common/db/schema"
 import { and, desc, eq, gt } from "drizzle-orm"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { createRoute } from "@/lib/api-utils"
 import { idStringParamsSchema, timeRangeQuerySchema } from "@/lib/route-schemas"
 import { getTimeRangeInMinutes } from "@/lib/uptime-utils"
@@ -23,7 +23,7 @@ export const GET = createRoute
   .params(idStringParamsSchema)
   .query(timeRangeQuerySchema)
   .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
     const { timeRange } = context.query
 

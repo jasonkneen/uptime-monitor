@@ -16,7 +16,7 @@ import {
   IconSparkles,
   IconTargetArrow,
 } from "@tabler/icons-react"
-import Image from "next/image"
+import Image from "@/lib/image"
 import { useTheme } from "next-themes"
 import type * as React from "react"
 import { useState } from "react"
@@ -106,7 +106,7 @@ const data = {
       external: true,
     },
     {
-      title: `${process.env.NEXT_PUBLIC_APP_VERSION}`,
+      title: `${import.meta.env.VITE_APP_VERSION}`,
       icon: IconDna,
     },
   ],

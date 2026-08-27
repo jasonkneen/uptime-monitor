@@ -1,11 +1,11 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import type { InitPayload } from "@solstatus/api/monitor-trigger"
 import { takeUniqueOrThrow, useDrizzle } from "@solstatus/common/db"
 import { EndpointMonitorsTable } from "@solstatus/common/db/schema"
 import { getErrorMessage, MonitorTriggerNotInitializedError } from "@solstatus/common/utils"
 import { eq } from "drizzle-orm"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { createRoute } from "@/lib/api-utils"
 import { idStringParamsSchema } from "@/lib/route-schemas"
 
@@ -18,7 +18,7 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @returns {Promise<NextResponse>} JSON response confirming the monitoring has been resumed
  */
 export const POST = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
-  const { env } = getCloudflareContext()
+  const { env } = getWorkerEnv()
   const db = useDrizzle(env.DB)
   const endpointMonitor = await db
     .select()

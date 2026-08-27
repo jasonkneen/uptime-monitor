@@ -1,12 +1,10 @@
-"use client"
-
 import type { endpointMonitorsSelectSchema, uptimeChecksSelectSchema } from "@solstatus/common/db"
 import { msToHumanReadable, secsToHumanReadable } from "@solstatus/common/utils"
 import { IconPointFilled } from "@tabler/icons-react"
+import { createFileRoute } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
-import type { Route } from "next"
-import Link from "next/link"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
+import Link from "@/lib/link"
+import { useRouter, useSearchParams } from "@/lib/navigation"
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react"
 import type { z } from "zod"
 import { PolkaDots } from "@/components/bg-patterns/polka-dots"
@@ -60,10 +58,13 @@ function calculateDefaultTimeRange(createdAt: Date): TimeRange {
   return "2d"
 }
 
-export default function EndpointMonitorDetailPage() {
-  const params = useParams()
+export const Route = createFileRoute("/endpoint-monitors/$id")({
+  component: EndpointMonitorDetailPage,
+})
+
+function EndpointMonitorDetailPage() {
+  const { id: endpointMonitorId } = Route.useParams()
   const router = useRouter()
-  const endpointMonitorId = params.id as string
   const { setHeaderLeftContent, setHeaderRightContent } = useHeaderContentOnly()
   const searchParams = useSearchParams()
   const { isEditEndpointMonitorDialogOpen } = useDialogStore()
@@ -362,7 +363,7 @@ export default function EndpointMonitorDetailPage() {
                     newTimeRange === "1d"
                       ? `/endpoint-monitors/${endpointMonitorId}`
                       : `/endpoint-monitors/${endpointMonitorId}?range=${newTimeRange}`
-                  router.push(newPath as Route, { scroll: false })
+                  router.push(newPath, { scroll: false })
 
                   // Clear transitioning state after a delay
                   setTimeout(() => {

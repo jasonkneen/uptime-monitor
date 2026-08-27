@@ -1,3 +1,4 @@
+// @ts-nocheck -- recharts 2 class components are not valid JSX under React 19 types
 import type { uptimeChecksSelectSchema } from "@solstatus/common/db"
 import { msToHumanReadable } from "@solstatus/common/utils"
 import {

@@ -5,6 +5,14 @@
     {
       "name": "effect",
       "specifier": "@mpsuesser/oxlint-plugin-effect"
+    },
+    {
+      "name": "anti-slop",
+      "specifier": "anti-slop"
+    },
+    {
+      "name": "anti-slop-effect",
+      "specifier": "./node_modules/anti-slop/src/effect/index.ts"
     }
   ],
   "ignorePatterns": [
@@ -13,16 +21,44 @@
     "**/.next/**",
     "**/.open-next/**",
     "**/.wrangler/**",
+    "**/.alchemy/**",
+    "**/.output/**",
+    "**/*.gen.ts",
     "**/tsconfig.json",
     "nub.lock",
     "packages/app/src/registry/**",
     "packages/common/src/db/migrations/**",
-    "packages/app/cloudflare-env.d.ts",
-    "packages/app/next-env.d.ts"
+    "packages/app/cloudflare-env.d.ts"
   ],
+  "rules": {
+    "anti-slop/no-chained-type-assertions": "warn",
+    "anti-slop/no-conditional-empty-object-spread": "warn",
+    "anti-slop/no-known-value-widening": "warn",
+    "anti-slop/no-module-mocking": "warn",
+    "anti-slop/no-object-parameters": "warn",
+    "anti-slop/no-reflect-apply": "warn",
+    "anti-slop/no-reflect-get": "warn",
+    "anti-slop/no-runtime-typeof": "warn",
+    "anti-slop/no-shape-in-symbol-names": "warn",
+    "anti-slop/no-unknown-parameters": "warn",
+    "anti-slop/no-unknown-returns": "warn",
+    "anti-slop/no-unknown-type-aliases": "warn",
+    "anti-slop/no-unsafe-dictionary-type": "warn",
+    "anti-slop/no-widen-then-assert": "warn",
+    "anti-slop/require-safety-comment-for-type-assertion": "warn",
+    "anti-slop-effect/no-service-constructor-imports": "warn"
+  },
   "overrides": [
     {
-      "files": ["**/*.config.ts", "**/scripts/**", "src/index.ts"],
+      "files": [
+        "**/*.config.ts",
+        "**/scripts/**",
+        "src/index.ts",
+        "tests/**",
+        "packages/infra/src/alchemy.run.ts",
+        "packages/infra/src/stack-options.ts",
+        "packages/app/infra/index.ts"
+      ],
       "rules": {
         "effect/avoid-process-env": "off",
         "effect/avoid-node-imports": "off"

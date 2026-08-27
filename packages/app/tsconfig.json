@@ -5,16 +5,21 @@
     "./src/**/*.ts",
     "./src/**/*.tsx",
     "./src/css.d.ts",
-    ".next/types/**/*.ts"
+    "./src/vite-env.d.ts",
+    "./vite.config.ts",
+    "./cloudflare-env.d.ts"
   ],
-  "exclude": ["node_modules", "dist", "public"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "public",
+    "src/registry/**",
+    "src/components/uptime-chart.tsx",
+    "src/components/latency-range-chart.tsx",
+    "src/components/latency-limit-chart.tsx"
+  ],
   "compilerOptions": {
-    "types": [
-      "@types/node",
-      "@cloudflare/workers-types",
-      "./cloudflare-env.d.ts",
-      "./next-env.d.ts"
-    ],
+    "types": ["@types/node", "@cloudflare/workers-types", "vite/client"],
     "rootDir": "./",
     "paths": {
       "@/infra/*": ["./infra/*"],
@@ -22,15 +27,10 @@
     },
     "outDir": "./dist",
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": true,
-    "incremental": true,
+    "incremental": false,
     "esModuleInterop": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "module": "esnext"
   }
 }

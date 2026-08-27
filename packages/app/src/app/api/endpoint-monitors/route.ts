@@ -1,4 +1,4 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import type { InitPayload } from "@solstatus/api/monitor-trigger"
 import {
   endpointMonitorsInsertDTOSchema,
@@ -11,7 +11,7 @@ import { createId, PRE_ID } from "@solstatus/common/utils"
 import { and, asc, count, desc, eq, like, sql } from "drizzle-orm"
 import type { SQLiteColumn } from "drizzle-orm/sqlite-core"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { z } from "zod"
 import { createRoute } from "@/lib/api-utils"
 import { paginationQuerySchema } from "@/lib/route-schemas"
@@ -40,7 +40,7 @@ const extendedQuerySchema = paginationQuerySchema().extend({
 })
 
 export const GET = createRoute.query(extendedQuerySchema).handler(async (_request, context) => {
-  const { env } = getCloudflareContext()
+  const { env } = getWorkerEnv()
   const db = useDrizzle(env.DB)
 
   const {
@@ -114,7 +114,7 @@ export const POST = createRoute
   .handler(async (_request, context) => {
     const endpointMonitor: z.infer<typeof endpointMonitorsInsertDTOSchema> = context.body
 
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
 
     // Normalize the URL to remove the protocol
