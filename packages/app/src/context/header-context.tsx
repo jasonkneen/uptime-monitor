@@ -1,13 +1,7 @@
 "use client"
 
 import type React from "react"
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useMemo,
-  useState,
-} from "react"
+import { createContext, type ReactNode, useContext, useMemo, useState } from "react"
 
 export type RefreshInterval = 10 | 30 | 60 | "off"
 
@@ -29,18 +23,13 @@ interface RefreshProgressContextProps {
   setRefreshProgress: (progress: number) => void
 }
 
-const HeaderContentContext = createContext<
-  HeaderContentContextProps | undefined
->(undefined)
-const RefreshProgressContext = createContext<
-  RefreshProgressContextProps | undefined
->(undefined)
+const HeaderContentContext = createContext<HeaderContentContextProps | undefined>(undefined)
+const RefreshProgressContext = createContext<RefreshProgressContextProps | undefined>(undefined)
 
 export const defaultHeaderContent: React.ReactNode = <div />
 
 export function HeaderProvider({ children }: { children: ReactNode }) {
-  const [headerLeftContent, setHeaderLeftContent] =
-    useState<React.ReactNode>(defaultHeaderContent)
+  const [headerLeftContent, setHeaderLeftContent] = useState<React.ReactNode>(defaultHeaderContent)
   const [headerRightContent, setHeaderRightContent] =
     useState<React.ReactNode>(defaultHeaderContent)
   const [refreshInterval, setRefreshInterval] = useState<RefreshInterval>(60)

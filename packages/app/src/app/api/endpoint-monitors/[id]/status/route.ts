@@ -15,19 +15,14 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @params {string} id - Endpoint Monitor ID
  * @returns {Promise<NextResponse>} JSON response with the endpointMonitor's running status
  */
-export const GET = createRoute
-  .params(idStringParamsSchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    const db = useDrizzle(env.DB)
-    const endpointMonitor = await db
-      .select()
-      .from(EndpointMonitorsTable)
-      .where(eq(EndpointMonitorsTable.id, context.params.id))
-      .then(takeUniqueOrThrow)
+export const GET = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
+  const { env } = getCloudflareContext()
+  const db = useDrizzle(env.DB)
+  const endpointMonitor = await db
+    .select()
+    .from(EndpointMonitorsTable)
+    .where(eq(EndpointMonitorsTable.id, context.params.id))
+    .then(takeUniqueOrThrow)
 
-    return NextResponse.json(
-      { status: endpointMonitor.isRunning },
-      { status: StatusCodes.OK },
-    )
-  })
+  return NextResponse.json({ status: endpointMonitor.isRunning }, { status: StatusCodes.OK })
+})

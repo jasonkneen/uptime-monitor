@@ -3,23 +3,22 @@
   "version": "2.1.0",
   "description": "Infrastructure configuration and deployment tools for SolStatus",
   "keywords": [
-    "solstatus",
-    "infrastructure",
     "cloudflare",
     "deployment",
-    "iac"
+    "iac",
+    "infrastructure",
+    "solstatus"
   ],
-  "homepage": "https://github.com/unibeck/solstatus/tree/main/packages/infra#readme",
+  "homepage": "https://github.com/jonbeckman/solstatus/tree/master/packages/infra#readme",
   "bugs": {
-    "url": "https://github.com/unibeck/solstatus/issues"
+    "url": "https://github.com/jonbeckman/solstatus/issues"
   },
+  "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unibeck/solstatus.git",
+    "url": "git+https://github.com/jonbeckman/solstatus.git",
     "directory": "packages/infra"
   },
-  "license": "MIT",
-  "type": "module",
   "files": [
     "src",
     "scripts",
@@ -27,6 +26,7 @@
     "drizzle.config.ts",
     "wrangler*.jsonc"
   ],
+  "type": "module",
   "imports": {
     "@/*": "./src/*"
   },
@@ -34,39 +34,36 @@
     ".": "./src/alchemy.run.ts"
   },
   "scripts": {
-    "infra:up": "pnpm exec ./src/alchemy.run.ts",
-    "infra:destroy": "pnpm exec ./src/alchemy.run.ts destroy",
+    "infra:up": "nub exec ./src/alchemy.run.ts",
+    "infra:destroy": "nub exec ./src/alchemy.run.ts destroy",
     "db:create": "wrangler d1 execute solstatus-local --local --command='SELECT 1' --cwd ../../ --config ./packages/infra/wrangler.jsonc",
     "db:create:prod": "wrangler d1 create solstatus-prod",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply DB --local --cwd ../../ --config ./packages/infra/wrangler.jsonc",
     "db:migrate:prod": "wrangler d1 migrations apply DB --env prod --remote",
     "db:seed": "tsx scripts/seed.ts",
-    "db:setup": "pnpm run db:create && pnpm run db:generate && pnpm run db:migrate && pnpm run db:seed",
+    "db:setup": "nub run db:create && nub run db:generate && nub run db:migrate && nub run db:seed",
     "db:studio": "drizzle-kit studio",
     "db:studio:prod": "APP_ENV=prod drizzle-kit studio",
     "wrangler:gen": "tsx scripts/genWranglerConfig.ts",
-    "format": "biome check . --write",
     "types": "tsc"
   },
   "dependencies": {
     "@solstatus/api": "workspace:*",
     "@solstatus/app": "workspace:*",
     "@solstatus/common": "workspace:*",
-    "alchemy": "catalog:"
+    "alchemy": "^0.43.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
-    "@cloudflare/workers-types": "catalog:",
+    "@cloudflare/workers-types": "^4.20250702.0",
     "@libsql/client": "^0.15.9",
-    "@types/node": "catalog:",
-    "dotenv": "catalog:",
-    "drizzle-kit": "catalog:",
-    "drizzle-orm": "catalog:",
-    "drizzle-seed": "catalog:",
-    "drizzle-zod": "catalog:",
-    "typescript": "catalog:",
-    "wrangler": "catalog:",
-    "zod": "catalog:"
+    "@types/node": "^24.12.4",
+    "dotenv": "16.5.0",
+    "drizzle-kit": "1.0.0-rc.5-ab785fc",
+    "drizzle-orm": "1.0.0-rc.5-ab785fc",
+    "drizzle-seed": "1.0.0-rc.5-ab785fc",
+    "typescript": "7.0.2",
+    "wrangler": "^4.22.0",
+    "zod": "4.4.3"
   }
 }

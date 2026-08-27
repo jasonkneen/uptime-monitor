@@ -1,18 +1,13 @@
 import { WorkerEntrypoint } from "cloudflare:workers"
 import { takeFirstOrNull, useDrizzle } from "@solstatus/common/db"
-import {
-  EndpointMonitorsTable,
-  UptimeChecksTable,
-} from "@solstatus/common/db/schema"
+import { EndpointMonitorsTable, UptimeChecksTable } from "@solstatus/common/db/schema"
 import { endpointSignature } from "@solstatus/common/utils"
 import { eq } from "drizzle-orm"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"
 import type { MonitorExecEnv } from "../infra/types/env"
 import { handleFailureTracking, sendAlert } from "./utils/error-tracking"
 
-export default class MonitorExec extends WorkerEntrypoint {
-  declare readonly env: MonitorExecEnv
-
+export default class MonitorExec extends WorkerEntrypoint<MonitorExecEnv> {
   // export default class MonitorExec extends WorkerEntrypoint {
   async fetch(_request: Request) {
     //Use service or RPC binding to work with the Monitor Durable Object
@@ -102,11 +97,7 @@ export default class MonitorExec extends WorkerEntrypoint {
     )
   }
 
-  async testSendAlert(
-    endpointMonitorId: string,
-    status: number,
-    errorMessage: string,
-  ) {
+  async testSendAlert(endpointMonitorId: string, status: number, errorMessage: string) {
     console.log(this.env.APP_ENV)
     const db = useDrizzle(this.env.DB)
 

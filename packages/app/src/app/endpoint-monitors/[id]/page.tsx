@@ -1,23 +1,13 @@
 "use client"
 
-import type {
-  endpointMonitorsSelectSchema,
-  uptimeChecksSelectSchema,
-} from "@solstatus/common/db"
+import type { endpointMonitorsSelectSchema, uptimeChecksSelectSchema } from "@solstatus/common/db"
 import { msToHumanReadable, secsToHumanReadable } from "@solstatus/common/utils"
 import { IconPointFilled } from "@tabler/icons-react"
 import { ArrowLeft } from "lucide-react"
 import type { Route } from "next"
 import Link from "next/link"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-import {
-  startTransition,
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react"
 import type { z } from "zod"
 import { PolkaDots } from "@/components/bg-patterns/polka-dots"
 import { EndpointMonitorDetailHeader } from "@/components/endpoint-monitor-detail-header"
@@ -25,10 +15,7 @@ import { EndpointMonitorSectionCards } from "@/components/endpoint-monitor-secti
 import LatencyRangeChart from "@/components/latency-range-chart"
 import { TimeRangeTabs } from "@/components/time-range-tabs"
 import { UptimeChart } from "@/components/uptime-chart"
-import {
-  defaultHeaderContent,
-  useHeaderContentOnly,
-} from "@/context/header-context"
+import { defaultHeaderContent, useHeaderContentOnly } from "@/context/header-context"
 import { useAutoRefresh } from "@/hooks/use-auto-refresh"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/new-york-v4/ui/badge"
@@ -90,19 +77,14 @@ export default function EndpointMonitorDetailPage() {
   const [timeRange, setTimeRange] = useState<TimeRange>(() => {
     const rangeParam = searchParams.get("range")
     const validRanges = ["30m", "1h", "3h", "6h", "1d", "2d", "7d"] as const
-    return validRanges.includes(rangeParam as TimeRange)
-      ? (rangeParam as TimeRange)
-      : "1d" // Temporary default until we load the monitor
+    return validRanges.includes(rangeParam as TimeRange) ? (rangeParam as TimeRange) : "1d" // Temporary default until we load the monitor
   })
 
   // Track if we've set the default based on monitor age
   const hasSetDefaultTimeRange = useRef(false)
 
-  const [uptimeData, setUptimeData] = useState<
-    z.infer<typeof uptimeChecksSelectSchema>[]
-  >([])
-  const [latestUptimeCheck, setLatestUptimeCheck] =
-    useState<LatestUptimeCheck | null>(null) // New state for latest check
+  const [uptimeData, setUptimeData] = useState<z.infer<typeof uptimeChecksSelectSchema>[]>([])
+  const [latestUptimeCheck, setLatestUptimeCheck] = useState<LatestUptimeCheck | null>(null) // New state for latest check
 
   const [uptimePercentage, setUptimePercentage] = useState<number | null>(null)
   const [avgLatency, setAvgLatency] = useState<number | null>(null)
@@ -119,32 +101,22 @@ export default function EndpointMonitorDetailPage() {
 
   const fetchWebsite = useCallback(async () => {
     try {
-      const response = await fetch(
-        `/api/endpoint-monitors/${endpointMonitorId}`,
-      )
+      const response = await fetch(`/api/endpoint-monitors/${endpointMonitorId}`)
       if (!response.ok) {
         if (response.status === 404) {
           router.push("/")
           return
         }
-        throw new Error(
-          `Failed to fetch endpointMonitor: ${response.statusText}`,
-        )
+        throw new Error(`Failed to fetch endpointMonitor: ${response.statusText}`)
       }
       const data = await response.json()
       const monitor = data as z.infer<typeof endpointMonitorsSelectSchema>
       setEndpointMonitor(monitor)
 
       // Set default time range based on monitor age if URL doesn't have a range
-      if (
-        !searchParams.get("range") &&
-        !hasSetDefaultTimeRange.current &&
-        monitor.createdAt
-      ) {
+      if (!searchParams.get("range") && !hasSetDefaultTimeRange.current && monitor.createdAt) {
         hasSetDefaultTimeRange.current = true
-        const defaultRange = calculateDefaultTimeRange(
-          new Date(monitor.createdAt),
-        )
+        const defaultRange = calculateDefaultTimeRange(new Date(monitor.createdAt))
         setTimeRange(defaultRange)
       }
     } catch (error) {
@@ -183,9 +155,7 @@ export default function EndpointMonitorDetailPage() {
         return
       }
 
-      const responseData = (await response.json()) as z.infer<
-        typeof uptimeChecksSelectSchema
-      >[]
+      const responseData = (await response.json()) as z.infer<typeof uptimeChecksSelectSchema>[]
 
       setUptimeData(responseData)
       setUptimeDataError(null)
@@ -196,9 +166,7 @@ export default function EndpointMonitorDetailPage() {
       if (!hasExistingData) {
         setUptimeData([])
       }
-      setUptimeDataError(
-        "An error occurred while loading endpointMonitor data.",
-      )
+      setUptimeDataError("An error occurred while loading endpointMonitor data.")
     } finally {
       setIsUptimeDataLoading(false)
     }
@@ -210,14 +178,10 @@ export default function EndpointMonitorDetailPage() {
     }
 
     try {
-      const response = await fetch(
-        `/api/endpoint-monitors/${endpointMonitorId}/uptime`,
-      )
+      const response = await fetch(`/api/endpoint-monitors/${endpointMonitorId}/uptime`)
       if (!response.ok) {
         if (response.status !== 404) {
-          console.error(
-            `Failed to fetch latest uptime check: ${response.statusText}`,
-          )
+          console.error(`Failed to fetch latest uptime check: ${response.statusText}`)
         }
         setLatestUptimeCheck(null)
         return
@@ -239,11 +203,7 @@ export default function EndpointMonitorDetailPage() {
 
   const refreshAllData = useCallback(async () => {
     if (endpointMonitorId) {
-      await Promise.all([
-        fetchWebsite(),
-        fetchUptimeDataRef.current(),
-        fetchLatestUptimeCheck(),
-      ])
+      await Promise.all([fetchWebsite(), fetchUptimeDataRef.current(), fetchLatestUptimeCheck()])
     }
   }, [endpointMonitorId, fetchWebsite, fetchLatestUptimeCheck])
 
@@ -290,27 +250,18 @@ export default function EndpointMonitorDetailPage() {
                   <TooltipContent>
                     <p>Latest check:</p>
                     <p>
-                      {new Date(latestUptimeCheck.timestamp).toLocaleString(
-                        undefined,
-                        {
-                          year: "numeric",
-                          month: "numeric",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "numeric",
-                          second: "numeric",
-                          timeZoneName: "short",
-                        },
-                      )}
+                      {new Date(latestUptimeCheck.timestamp).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        second: "numeric",
+                        timeZoneName: "short",
+                      })}
                     </p>
                     <p>Status: {latestUptimeCheck.status}</p>
-                    <p>
-                      Latency:{" "}
-                      {msToHumanReadable(
-                        latestUptimeCheck.responseTime ?? 0,
-                        true,
-                      )}
-                    </p>
+                    <p>Latency: {msToHumanReadable(latestUptimeCheck.responseTime ?? 0, true)}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -334,19 +285,12 @@ export default function EndpointMonitorDetailPage() {
         ),
       )
     }
-  }, [
-    endpointMonitor,
-    latestUptimeCheck,
-    setHeaderLeftContent,
-    setHeaderRightContent,
-  ])
+  }, [endpointMonitor, latestUptimeCheck, setHeaderLeftContent, setHeaderRightContent])
 
   useEffect(() => {
     if (uptimeData.length > 0) {
       const uptimePercentage =
-        (uptimeData.filter((check) => check.isExpectedStatus).length /
-          uptimeData.length) *
-        100
+        (uptimeData.filter((check) => check.isExpectedStatus).length / uptimeData.length) * 100
       setUptimePercentage(uptimePercentage)
     } else {
       setUptimePercentage(null)
@@ -356,8 +300,7 @@ export default function EndpointMonitorDetailPage() {
   useEffect(() => {
     if (uptimeData.length > 0) {
       const avgLatency =
-        uptimeData.reduce((sum, check) => sum + (check.responseTime ?? 0), 0) /
-        uptimeData.length
+        uptimeData.reduce((sum, check) => sum + (check.responseTime ?? 0), 0) / uptimeData.length
       setAvgLatency(avgLatency)
     } else {
       setAvgLatency(null)
@@ -368,9 +311,7 @@ export default function EndpointMonitorDetailPage() {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="h-[400px] flex items-center justify-center">
-          <p className="text-muted-foreground">
-            Loading endpoint Monitor details...
-          </p>
+          <p className="text-muted-foreground">Loading endpoint Monitor details...</p>
         </div>
       </div>
     )
@@ -440,8 +381,7 @@ export default function EndpointMonitorDetailPage() {
             error={uptimeDataError}
           />
           <div className="mt-0 flex flex-col gap-6">
-            {deferredUptimeData.length > 0 ||
-            (isUptimeDataLoading && hasLoadedDataOnce.current) ? (
+            {deferredUptimeData.length > 0 || (isUptimeDataLoading && hasLoadedDataOnce.current) ? (
               <>
                 <Card
                   className={cn(
@@ -454,9 +394,7 @@ export default function EndpointMonitorDetailPage() {
                       <UptimeChart
                         data={deferredUptimeData}
                         timeRange={deferredTimeRange}
-                        isLoading={
-                          isUptimeDataLoading || deferredIsTransitioning
-                        }
+                        isLoading={isUptimeDataLoading || deferredIsTransitioning}
                         error={uptimeDataError}
                       />
                     </div>
@@ -473,9 +411,7 @@ export default function EndpointMonitorDetailPage() {
                       <LatencyRangeChart
                         data={deferredUptimeData}
                         timeRange={deferredTimeRange}
-                        isLoading={
-                          isUptimeDataLoading || deferredIsTransitioning
-                        }
+                        isLoading={isUptimeDataLoading || deferredIsTransitioning}
                         error={uptimeDataError}
                       />
                     </div>

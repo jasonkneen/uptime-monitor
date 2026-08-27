@@ -24,35 +24,32 @@ const querySchema = z.object({
   checkIntervalMax: z.number().optional(),
 })
 
-export const GET = createRoute
-  .query(querySchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    const db = useDrizzle(env.DB)
+export const GET = createRoute.query(querySchema).handler(async (_request, context) => {
+  const { env } = getCloudflareContext()
+  const db = useDrizzle(env.DB)
 
-    const { search, isRunning, checkIntervalMin, checkIntervalMax } =
-      context.query
+  const { search, isRunning, checkIntervalMin, checkIntervalMax } = context.query
 
-    const { count: totalCount } = await db
-      .select({ count: count() })
-      .from(EndpointMonitorsTable)
-      .where(
-        and(
-          search
-            ? sql`(${like(EndpointMonitorsTable.name, `%${search}%`)} OR ${like(EndpointMonitorsTable.url, `%${search}%`)})`
-            : sql`1=1`,
-          isRunning !== undefined
-            ? eq(EndpointMonitorsTable.isRunning, isRunning === "true")
-            : sql`1=1`,
-          checkIntervalMin !== undefined
-            ? sql`${EndpointMonitorsTable.checkInterval} >= ${checkIntervalMin}`
-            : sql`1=1`,
-          checkIntervalMax !== undefined
-            ? sql`${EndpointMonitorsTable.checkInterval} <= ${checkIntervalMax}`
-            : sql`1=1`,
-        ),
-      )
-      .then(takeUniqueOrThrow)
+  const { count: totalCount } = await db
+    .select({ count: count() })
+    .from(EndpointMonitorsTable)
+    .where(
+      and(
+        search
+          ? sql`(${like(EndpointMonitorsTable.name, `%${search}%`)} OR ${like(EndpointMonitorsTable.url, `%${search}%`)})`
+          : sql`1=1`,
+        isRunning !== undefined
+          ? eq(EndpointMonitorsTable.isRunning, isRunning === "true")
+          : sql`1=1`,
+        checkIntervalMin !== undefined
+          ? sql`${EndpointMonitorsTable.checkInterval} >= ${checkIntervalMin}`
+          : sql`1=1`,
+        checkIntervalMax !== undefined
+          ? sql`${EndpointMonitorsTable.checkInterval} <= ${checkIntervalMax}`
+          : sql`1=1`,
+      ),
+    )
+    .then(takeUniqueOrThrow)
 
-    return NextResponse.json(totalCount)
-  })
+  return NextResponse.json(totalCount)
+})

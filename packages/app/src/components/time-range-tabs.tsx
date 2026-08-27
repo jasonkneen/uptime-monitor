@@ -12,11 +12,7 @@ const timeRanges: TimeRange[] = ["30m", "1h", "3h", "6h", "1d", "2d", "7d"]
 
 export function TimeRangeTabs({ value, onValueChange }: TimeRangeTabsProps) {
   return (
-    <Tabs
-      value={value}
-      onValueChange={(val) => onValueChange(val as TimeRange)}
-      className="w-full"
-    >
+    <Tabs value={value} onValueChange={(val) => onValueChange(val as TimeRange)} className="w-full">
       <div className="flex justify-end items-center mb-3">
         <TabsList className="h-auto p-1">
           {timeRanges.map((range) => (

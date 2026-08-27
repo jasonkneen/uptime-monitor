@@ -4,11 +4,7 @@ import type { DBResource } from "@solstatus/common/infra"
 import type { InfraMetadata } from "@solstatus/common/utils/types"
 import alchemy, { type } from "alchemy"
 import { DurableObjectNamespace, Worker } from "alchemy/cloudflare"
-import type {
-  MonitorExec,
-  MonitorTrigger,
-  MonitorTriggerRPC,
-} from "../src/index"
+import type { MonitorExec, MonitorTrigger, MonitorTriggerRPC } from "../src/index"
 
 export async function createApi(
   resPrefix: string,
@@ -22,11 +18,7 @@ export async function createApi(
     monitorTriggerName: `${resPrefix}-monitor-trigger`,
   }
 
-  const monitorExecWorker = await createMonitorExecWorker(
-    infraMetadata,
-    stage,
-    db,
-  )
+  const monitorExecWorker = await createMonitorExecWorker(infraMetadata, stage, db)
   const monitorTriggerWorker = await createMonitorTriggerWorker(
     infraMetadata,
     db,
@@ -63,9 +55,7 @@ async function createMonitorExecWorker(
     },
   })
 }
-export type MonitorExecWorkerResource = Awaited<
-  ReturnType<typeof createMonitorExecWorker>
->
+export type MonitorExecWorkerResource = Awaited<ReturnType<typeof createMonitorExecWorker>>
 
 async function createMonitorTriggerWorker(
   infraMetadata: InfraMetadata,
@@ -97,6 +87,4 @@ async function createMonitorTriggerWorker(
     },
   })
 }
-export type MonitorTriggerWorkerResource = Awaited<
-  ReturnType<typeof createMonitorTriggerWorker>
->
+export type MonitorTriggerWorkerResource = Awaited<ReturnType<typeof createMonitorTriggerWorker>>

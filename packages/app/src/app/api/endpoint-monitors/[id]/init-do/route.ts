@@ -16,25 +16,20 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @params {string} id - Endpoint Monitor ID
  * @returns {Promise<NextResponse>} JSON response confirming the Monitor DO has been initialized
  */
-export const POST = createRoute
-  .params(idStringParamsSchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    const db = useDrizzle(env.DB)
-    const endpointMonitor = await db
-      .select()
-      .from(EndpointMonitorsTable)
-      .where(eq(EndpointMonitorsTable.id, context.params.id))
-      .then(takeUniqueOrThrow)
+export const POST = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
+  const { env } = getCloudflareContext()
+  const db = useDrizzle(env.DB)
+  const endpointMonitor = await db
+    .select()
+    .from(EndpointMonitorsTable)
+    .where(eq(EndpointMonitorsTable.id, context.params.id))
+    .then(takeUniqueOrThrow)
 
-    await env.MONITOR_TRIGGER_RPC.init({
-      monitorId: endpointMonitor.id,
-      monitorType: "endpoint",
-      checkInterval: endpointMonitor.checkInterval,
-    } as InitPayload)
+  await env.MONITOR_TRIGGER_RPC.init({
+    monitorId: endpointMonitor.id,
+    monitorType: "endpoint",
+    checkInterval: endpointMonitor.checkInterval,
+  } as InitPayload)
 
-    return NextResponse.json(
-      { message: "Initialized Monitor DO" },
-      { status: StatusCodes.OK },
-    )
-  })
+  return NextResponse.json({ message: "Initialized Monitor DO" }, { status: StatusCodes.OK })
+})

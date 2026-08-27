@@ -60,13 +60,7 @@ export function EndpointMonitorSectionCards({
             {endpointMonitor.consecutiveFailures}
           </CardTitle>
           <CardAction>
-            <Badge
-              variant={
-                endpointMonitor.consecutiveFailures > 0
-                  ? "destructive"
-                  : "outline"
-              }
-            >
+            <Badge variant={endpointMonitor.consecutiveFailures > 0 ? "destructive" : "outline"}>
               {endpointMonitor.consecutiveFailures > 0 ? (
                 <IconAlertTriangle />
               ) : (
@@ -77,12 +71,8 @@ export function EndpointMonitorSectionCards({
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Recent check failures
-          </div>
-          <div className="text-muted-foreground">
-            Number of consecutive failed checks
-          </div>
+          <div className="line-clamp-1 flex gap-2 font-medium">Recent check failures</div>
+          <div className="text-muted-foreground">Number of consecutive failed checks</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
@@ -92,14 +82,8 @@ export function EndpointMonitorSectionCards({
             {endpointMonitor.activeAlert ? "Active" : "Inactive"}
           </CardTitle>
           <CardAction>
-            <Badge
-              variant={endpointMonitor.activeAlert ? "destructive" : "outline"}
-            >
-              {endpointMonitor.activeAlert ? (
-                <IconBellExclamation />
-              ) : (
-                <IconBellCheck />
-              )}
+            <Badge variant={endpointMonitor.activeAlert ? "destructive" : "outline"}>
+              {endpointMonitor.activeAlert ? <IconBellExclamation /> : <IconBellCheck />}
               {endpointMonitor.activeAlert ? "Action Needed" : "All Clear"}
             </Badge>
           </CardAction>
@@ -108,9 +92,7 @@ export function EndpointMonitorSectionCards({
           <div className="line-clamp-1 flex gap-2 font-medium">
             {endpointMonitor.activeAlert ? "Active alert" : "No active alerts"}
           </div>
-          <div className="text-muted-foreground">
-            Current alert status for this site
-          </div>
+          <div className="text-muted-foreground">Current alert status for this site</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
@@ -121,11 +103,7 @@ export function EndpointMonitorSectionCards({
           </CardTitle>
           <CardAction>
             <Badge variant={avgResponseTime > 500 ? "destructive" : "outline"}>
-              {avgResponseTime > 500 ? (
-                <IconTrendingDown />
-              ) : (
-                <IconTrendingUp />
-              )}
+              {avgResponseTime > 500 ? <IconTrendingDown /> : <IconTrendingUp />}
               {avgResponseTime > 500 ? "Slow" : "Fast"}
             </Badge>
           </CardAction>
@@ -134,9 +112,7 @@ export function EndpointMonitorSectionCards({
           <div className="line-clamp-1 flex gap-2 font-medium">
             Last 24 hours {/* This time range might need to be dynamic */}
           </div>
-          <div className="text-muted-foreground">
-            Average response time for this site
-          </div>
+          <div className="text-muted-foreground">Average response time for this site</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
@@ -156,9 +132,7 @@ export function EndpointMonitorSectionCards({
           <div className="line-clamp-1 flex gap-2 font-medium">
             Last 24 hours {/* This time range might need to be dynamic */}
           </div>
-          <div className="text-muted-foreground">
-            Overall uptime percentage for this site
-          </div>
+          <div className="text-muted-foreground">Overall uptime percentage for this site</div>
         </CardFooter>
       </Card>
     </div>

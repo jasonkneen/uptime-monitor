@@ -133,9 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { theme } = useTheme()
   const [isHovered, setIsHovered] = useState(false)
   const gifSrc =
-    theme === "dark"
-      ? "/liquid-metal-solstatus-dark.gif"
-      : "/liquid-metal-solstatus-light.gif"
+    theme === "dark" ? "/liquid-metal-solstatus-dark.gif" : "/liquid-metal-solstatus-light.gif"
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -159,9 +157,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 ) : (
                   <SolStatusLogo className="!size-8 fill-black dark:fill-white" />
                 )}
-                <span className="text-lg font-semibold font-unbounded">
-                  SolStatus
-                </span>
+                <span className="text-lg font-semibold font-unbounded">SolStatus</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

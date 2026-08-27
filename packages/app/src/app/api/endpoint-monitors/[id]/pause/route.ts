@@ -12,14 +12,9 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @params {string} id - Endpoint Monitor ID
  * @returns {Promise<NextResponse>} JSON response confirming the monitoring has been paused
  */
-export const POST = createRoute
-  .params(idStringParamsSchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    await env.MONITOR_TRIGGER_RPC.pauseDo(context.params.id)
+export const POST = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
+  const { env } = getCloudflareContext()
+  await env.MONITOR_TRIGGER_RPC.pauseDo(context.params.id)
 
-    return NextResponse.json(
-      { message: "Paused Monitor DO" },
-      { status: StatusCodes.OK },
-    )
-  })
+  return NextResponse.json({ message: "Paused Monitor DO" }, { status: StatusCodes.OK })
+})

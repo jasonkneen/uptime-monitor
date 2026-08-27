@@ -2,10 +2,7 @@
 
 import { IconSettings } from "@tabler/icons-react"
 import { memo, useState } from "react"
-import {
-  type RefreshInterval,
-  useHeaderContext,
-} from "@/context/header-context"
+import { type RefreshInterval, useHeaderContext } from "@/context/header-context"
 import { Button } from "@/registry/new-york-v4/ui/button"
 import {
   DropdownMenu,
@@ -22,16 +19,11 @@ const intervalLabels: Record<RefreshInterval, string> = {
 }
 
 export const RefreshProgressBar = memo(function RefreshProgressBar() {
-  const {
-    refreshInterval,
-    setRefreshInterval,
-    refreshProgress,
-    isRefreshEnabled,
-  } = useHeaderContext()
+  const { refreshInterval, setRefreshInterval, refreshProgress, isRefreshEnabled } =
+    useHeaderContext()
   const [isHovered, setIsHovered] = useState(false)
   const [isDropdownOpen, setDropdownOpen] = useState(false)
-  const [transitionDurationClass, setTransitionDurationClass] =
-    useState("duration-200")
+  const [transitionDurationClass, setTransitionDurationClass] = useState("duration-200")
 
   const showDetails = isHovered || isDropdownOpen
   const hoverHeight = showDetails ? "h-8" : "h-1"
@@ -70,17 +62,13 @@ export const RefreshProgressBar = memo(function RefreshProgressBar() {
         {isRefreshEnabled && (
           <div className="flex justify-center h-full">
             <div
-              className={
-                "h-full bg-black dark:bg-white transition-all duration-300 ease-linear"
-              }
+              className={"h-full bg-black dark:bg-white transition-all duration-300 ease-linear"}
               style={{ width: `${refreshProgress}%` }}
               // style={{ width: "10%" }}
             />
           </div>
         )}
-        <div
-          className={"absolute top-0 left-1/2 h-full w-fit -translate-x-1/2"}
-        >
+        <div className={"absolute top-0 left-1/2 h-full w-fit -translate-x-1/2"}>
           <div
             className={`absolute inset-0 bg-black dark:bg-white transition-transform origin-center ${transitionDurationClass} ${
               showDetails ? "scale-x-100" : "scale-x-0"
@@ -102,24 +90,14 @@ export const RefreshProgressBar = memo(function RefreshProgressBar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                <DropdownMenuItem onSelect={() => handleSelect(10)}>
-                  10 seconds
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => handleSelect(30)}>
-                  30 seconds
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => handleSelect(60)}>
-                  1 minute
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => handleSelect("off")}>
-                  Off
-                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleSelect(10)}>10 seconds</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleSelect(30)}>30 seconds</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleSelect(60)}>1 minute</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleSelect("off")}>Off</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <span className="text-sm">
-              Auto-refresh: {intervalLabels[refreshInterval]}
-            </span>
+            <span className="text-sm">Auto-refresh: {intervalLabels[refreshInterval]}</span>
           </div>
         </div>
       </div>

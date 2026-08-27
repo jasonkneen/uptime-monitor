@@ -48,9 +48,7 @@ export function DataTable() {
   // Get state and actions from the store
   const data = useDataTableStore((state) => state.data)
   const isLoading = useDataTableStore((state) => state.isLoading)
-  const totalEndpointMonitors = useDataTableStore(
-    (state) => state.totalEndpointMonitors,
-  )
+  const totalEndpointMonitors = useDataTableStore((state) => state.totalEndpointMonitors)
   const rowSelection = useDataTableStore((state) => state.rowSelection)
   const columnVisibility = useDataTableStore((state) => state.columnVisibility)
   const columnFilters = useDataTableStore((state) => state.columnFilters)
@@ -96,8 +94,7 @@ export function DataTable() {
       }
 
       // Handle sorting parameters, omitting defaults
-      const isDefaultSort =
-        params.orderBy === "consecutiveFailures" && params.order === "desc"
+      const isDefaultSort = params.orderBy === "consecutiveFailures" && params.order === "desc"
 
       if (params.orderBy === undefined && params.order === undefined) {
         // No sorting params passed in this update, existing ones remain or are absent
@@ -138,9 +135,7 @@ export function DataTable() {
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updater) => {
     const store = useDataTableStore.getState()
     if (typeof updater === "function") {
-      store.setRowSelection(
-        updater(store.rowSelection) as Record<string, boolean>,
-      )
+      store.setRowSelection(updater(store.rowSelection) as Record<string, boolean>)
     } else {
       store.setRowSelection(updater as Record<string, boolean>)
     }
@@ -166,9 +161,7 @@ export function DataTable() {
     store.fetchEndpointMonitors()
   }
 
-  const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (
-    updater,
-  ) => {
+  const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (updater) => {
     const store = useDataTableStore.getState()
     if (typeof updater === "function") {
       store.setColumnFilters(updater(store.columnFilters))
@@ -226,16 +219,9 @@ export function DataTable() {
     // Update pagination from URL if present and different from store
     const currentPageIndex = store.pagination.pageIndex
     const currentPageSize = store.pagination.pageSize
-    const targetPageIndex = pageParam
-      ? Number.parseInt(pageParam, 10)
-      : DEFAULT_PAGE_INDEX
-    const targetPageSize = pageSizeParam
-      ? Number.parseInt(pageSizeParam, 10)
-      : DEFAULT_PAGE_SIZE
-    if (
-      targetPageIndex !== currentPageIndex ||
-      targetPageSize !== currentPageSize
-    ) {
+    const targetPageIndex = pageParam ? Number.parseInt(pageParam, 10) : DEFAULT_PAGE_INDEX
+    const targetPageSize = pageSizeParam ? Number.parseInt(pageSizeParam, 10) : DEFAULT_PAGE_SIZE
+    if (targetPageIndex !== currentPageIndex || targetPageSize !== currentPageSize) {
       store.setPagination({
         pageIndex: targetPageIndex,
         pageSize: targetPageSize,
@@ -269,10 +255,7 @@ export function DataTable() {
         store.setSorting(targetSorting)
         needsUpdate = true
       }
-    } else if (
-      currentSorting.length > 0 &&
-      currentSorting[0].id !== "consecutiveFailures"
-    ) {
+    } else if (currentSorting.length > 0 && currentSorting[0].id !== "consecutiveFailures") {
       // If no sort params in URL, but current sort isn't the default, reset to default
       store.setSorting([{ id: "consecutiveFailures", desc: true }])
       needsUpdate = true
@@ -309,24 +292,15 @@ export function DataTable() {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
-    pageCount: Math.max(
-      1,
-      Math.ceil(totalEndpointMonitors / pagination.pageSize),
-    ),
+    pageCount: Math.max(1, Math.ceil(totalEndpointMonitors / pagination.pageSize)),
   })
 
   const hasData = data.length > 0
 
   return (
-    <Tabs
-      defaultValue="endpointMonitors"
-      className="w-full flex-col justify-start gap-6"
-    >
+    <Tabs defaultValue="endpointMonitors" className="w-full flex-col justify-start gap-6">
       <Toolbar table={table} totalEndpointMonitors={totalEndpointMonitors} />
-      <TabsContent
-        value="endpointMonitors"
-        className="relative flex flex-col gap-4 overflow-auto"
-      >
+      <TabsContent value="endpointMonitors" className="relative flex flex-col gap-4 overflow-auto">
         {isLoading && !hasData ? (
           <DataTableSkeleton />
         ) : (
@@ -341,10 +315,7 @@ export function DataTable() {
                         <TableHead key={header.id} colSpan={header.colSpan}>
                           {header.isPlaceholder
                             ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
+                            : flexRender(header.column.columnDef.header, header.getContext())}
                         </TableHead>
                       )
                     })}
@@ -353,15 +324,10 @@ export function DataTable() {
               </TableHeader>
               <TableBody className="**:data-[slot=table-cell]:first:w-8">
                 {table.getRowModel().rows?.length ? (
-                  table
-                    .getRowModel()
-                    .rows.map((row) => <DataRow key={row.id} row={row} />)
+                  table.getRowModel().rows.map((row) => <DataRow key={row.id} row={row} />)
                 ) : (
                   <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
                       No endpoint monitors found.
                     </TableCell>
                   </TableRow>

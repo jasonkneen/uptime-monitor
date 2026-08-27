@@ -8,16 +8,9 @@ interface UseAutoRefreshOptions {
   enabled?: boolean
 }
 
-export function useAutoRefresh({
-  onRefresh,
-  enabled = true,
-}: UseAutoRefreshOptions) {
-  const {
-    refreshInterval,
-    isRefreshEnabled,
-    setRefreshProgress,
-    setIsAutoRefreshAvailable,
-  } = useHeaderContext()
+export function useAutoRefresh({ onRefresh, enabled = true }: UseAutoRefreshOptions) {
+  const { refreshInterval, isRefreshEnabled, setRefreshProgress, setIsAutoRefreshAvailable } =
+    useHeaderContext()
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const startTimeRef = useRef<number>(0)
@@ -77,14 +70,7 @@ export function useAutoRefresh({
     }, intervalMs)
 
     onRefresh()
-  }, [
-    refreshInterval,
-    isRefreshEnabled,
-    enabled,
-    onRefresh,
-    setRefreshProgress,
-    clearIntervals,
-  ])
+  }, [refreshInterval, isRefreshEnabled, enabled, onRefresh, setRefreshProgress, clearIntervals])
 
   useEffect(() => {
     startRefresh()

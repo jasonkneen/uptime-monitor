@@ -15,22 +15,17 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @params {string} id - Endpoint Monitor ID
  * @returns {Promise<NextResponse>} JSON response confirming the check execution
  */
-export const GET = createRoute
-  .params(idStringParamsSchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    const db = useDrizzle(env.DB)
+export const GET = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
+  const { env } = getCloudflareContext()
+  const db = useDrizzle(env.DB)
 
-    const endpointMonitor = await db
-      .select()
-      .from(EndpointMonitorsTable)
-      .where(eq(EndpointMonitorsTable.id, context.params.id))
-      .then(takeUniqueOrThrow)
+  const endpointMonitor = await db
+    .select()
+    .from(EndpointMonitorsTable)
+    .where(eq(EndpointMonitorsTable.id, context.params.id))
+    .then(takeUniqueOrThrow)
 
-    await env.MONITOR_EXEC.executeCheck(endpointMonitor.id)
+  await env.MONITOR_EXEC.executeCheck(endpointMonitor.id)
 
-    return NextResponse.json(
-      { message: "Executed check via DO" },
-      { status: StatusCodes.OK },
-    )
-  })
+  return NextResponse.json({ message: "Executed check via DO" }, { status: StatusCodes.OK })
+})

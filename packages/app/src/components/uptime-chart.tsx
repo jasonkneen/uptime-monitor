@@ -167,10 +167,7 @@ const processUptimeData = (
 
   // Aggregate checks into time buckets
   for (const check of data) {
-    const bucketStartSeconds = getTimeBucketStart(
-      new Date(check.timestamp).getTime(),
-      range,
-    )
+    const bucketStartSeconds = getTimeBucketStart(new Date(check.timestamp).getTime(), range)
     // Only include data within the selected time range
     if (bucketStartSeconds * 1000 >= startTime.getTime()) {
       if (!aggregatedData[bucketStartSeconds]) {
@@ -268,8 +265,7 @@ const processUptimeData = (
       // TODO: Calculate countNoData based on expected checksPerBucket - countTotalChecksInBucket
       // For now, we'll just use the counts based on actual data.
 
-      const totalHeight =
-        count2xx + count3xx + count4xx + count5xx + countNoData
+      const totalHeight = count2xx + count3xx + count4xx + count5xx + countNoData
       const segments: ProcessedUptimeDataPoint["segments"] = []
 
       let currentY = 0
@@ -337,9 +333,7 @@ const processUptimeData = (
     }
 
     // Move to the next bucket time
-    currentBucketTime = new Date(
-      currentBucketTime.getTime() + intervalMinutes * 60000,
-    )
+    currentBucketTime = new Date(currentBucketTime.getTime() + intervalMinutes * 60000)
   }
 
   return processedData
@@ -424,24 +418,16 @@ const CustomUptimeTooltip: React.FC<CustomUptimeTooltipProps> = ({
         <p className="label font-semibold">{`${formattedTime}`}</p>
         <div className="intro mt-1 space-y-0.5 text-sm text-muted-foreground">
           {dataPoint.count2xx > 0 && (
-            <p style={{ color: "#22c55e" }}>
-              2xx Success: {dataPoint.count2xx}
-            </p>
+            <p style={{ color: "#22c55e" }}>2xx Success: {dataPoint.count2xx}</p>
           )}
           {dataPoint.count3xx > 0 && (
-            <p style={{ color: "#facc15" }}>
-              3xx Redirect: {dataPoint.count3xx}
-            </p>
+            <p style={{ color: "#facc15" }}>3xx Redirect: {dataPoint.count3xx}</p>
           )}
           {dataPoint.count4xx > 0 && (
-            <p style={{ color: "#f97316" }}>
-              4xx Client Error: {dataPoint.count4xx}
-            </p>
+            <p style={{ color: "#f97316" }}>4xx Client Error: {dataPoint.count4xx}</p>
           )}
           {dataPoint.count5xx > 0 && (
-            <p style={{ color: "#ef4444" }}>
-              5xx Server Error: {dataPoint.count5xx}
-            </p>
+            <p style={{ color: "#ef4444" }}>5xx Server Error: {dataPoint.count5xx}</p>
           )}
           {dataPoint.countNoData > 0 && (
             <p style={{ color: "#999" }}>No Data: {dataPoint.countNoData}</p>
@@ -518,8 +504,7 @@ export const UptimeChart: React.FC<UptimeChartProps> = memo(
       if (processedData.length > 0) {
         let startTime: number
         const endTime = Math.floor(Date.now() / 1000)
-        const lastBucketTime =
-          processedData[processedData.length - 1]?.timeBucket ?? endTime
+        const lastBucketTime = processedData[processedData.length - 1]?.timeBucket ?? endTime
 
         switch (timeRange) {
           case "30m":
@@ -559,8 +544,7 @@ export const UptimeChart: React.FC<UptimeChartProps> = memo(
 
       let maxCount = 0
       for (const p of processedData) {
-        const totalInBucket =
-          p.count2xx + p.count3xx + p.count4xx + p.count5xx + p.countNoData
+        const totalInBucket = p.count2xx + p.count3xx + p.count4xx + p.count5xx + p.countNoData
         maxCount = Math.max(maxCount, totalInBucket)
       }
 
@@ -652,11 +636,7 @@ export const UptimeChart: React.FC<UptimeChartProps> = memo(
               />
 
               {/* Single Bar with custom shape renderer */}
-              <Bar
-                dataKey="totalHeight"
-                shape={CustomBar}
-                isAnimationActive={false}
-              />
+              <Bar dataKey="totalHeight" shape={CustomBar} isAnimationActive={false} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -4,8 +4,8 @@
     {
       "label": "dev (app)",
       "type": "shell",
-      "command": "pnpm",
-      "args": ["dev"],
+      "command": "nub",
+      "args": ["run", "dev"],
       "options": {
         "cwd": "${workspaceFolder}/packages/app"
       },
@@ -21,8 +21,8 @@
     {
       "label": "dev (api)",
       "type": "shell",
-      "command": "pnpm",
-      "args": ["dev"],
+      "command": "nub",
+      "args": ["run", "dev"],
       "options": {
         "cwd": "${workspaceFolder}/packages/api"
       },
@@ -38,8 +38,8 @@
     {
       "label": "dev",
       "type": "shell",
-      "command": "pnpm",
-      "args": ["dev"],
+      "command": "nub",
+      "args": ["run", "dev"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -134,12 +134,7 @@
     },
     {
       "label": "terminal",
-      "dependsOn": [
-        "term (common)",
-        "term (infra)",
-        "term (api)",
-        "term (app)"
-      ],
+      "dependsOn": ["term (common)", "term (infra)", "term (api)", "term (app)"],
       "problemMatcher": []
     }
   ]

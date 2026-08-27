@@ -23,37 +23,35 @@ import { idStringParamsSchema } from "@/lib/route-schemas"
  * @throws {NextResponse} 404 Not Found if endpointMonitor doesn't exist
  * @throws {NextResponse} 500 Internal Server Error on database errors
  */
-export const GET = createRoute
-  .params(idStringParamsSchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    const db = useDrizzle(env.DB)
+export const GET = createRoute.params(idStringParamsSchema).handler(async (_request, context) => {
+  const { env } = getCloudflareContext()
+  const db = useDrizzle(env.DB)
 
-    let endpointMonitor:
-      | z.infer<typeof endpointMonitorsSelectSchema>
-      | undefined
-    try {
-      endpointMonitor = await db.query.EndpointMonitorsTable.findFirst({
-        where: eq(EndpointMonitorsTable.id, context.params.id),
-      })
-    } catch (error) {
-      console.error("Error fetching endpointMonitor: ", error)
-      // TODO: Use HttpStatusCodes.INTERNAL_SERVER_ERROR
-      return NextResponse.json(
-        { error: "Failed to fetch endpointMonitor" },
-        { status: StatusCodes.INTERNAL_SERVER_ERROR },
-      )
-    }
+  let endpointMonitor: z.infer<typeof endpointMonitorsSelectSchema> | undefined
+  try {
+    endpointMonitor = await db
+      .select()
+      .from(EndpointMonitorsTable)
+      .where(eq(EndpointMonitorsTable.id, context.params.id))
+      .then((rows) => rows[0])
+  } catch (error) {
+    console.error("Error fetching endpointMonitor: ", error)
+    // TODO: Use HttpStatusCodes.INTERNAL_SERVER_ERROR
+    return NextResponse.json(
+      { error: "Failed to fetch endpointMonitor" },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
+    )
+  }
 
-    if (!endpointMonitor) {
-      return NextResponse.json(
-        { message: ReasonPhrases.NOT_FOUND },
-        { status: StatusCodes.NOT_FOUND },
-      )
-    }
+  if (!endpointMonitor) {
+    return NextResponse.json(
+      { message: ReasonPhrases.NOT_FOUND },
+      { status: StatusCodes.NOT_FOUND },
+    )
+  }
 
-    return NextResponse.json(endpointMonitor)
-  })
+  return NextResponse.json(endpointMonitor)
+})
 
 /**
  * PATCH /api/endpoint-monitors/[id]
@@ -73,12 +71,8 @@ export const PATCH = createRoute
     const { env } = getCloudflareContext()
     const db = useDrizzle(env.DB)
 
-    const endpointMonitor: z.infer<typeof endpointMonitorsPatchSchema> =
-      context.body
-    let updatedWebsite:
-      | z.infer<typeof endpointMonitorsSelectSchema>
-      | undefined
-      | null
+    const endpointMonitor: z.infer<typeof endpointMonitorsPatchSchema> = context.body
+    let updatedWebsite: z.infer<typeof endpointMonitorsSelectSchema> | undefined | null
     try {
       updatedWebsite = await db
         .update(EndpointMonitorsTable)
@@ -130,9 +124,7 @@ export const DELETE = createRoute
     const db = useDrizzle(env.DB)
 
     try {
-      await db
-        .delete(EndpointMonitorsTable)
-        .where(eq(EndpointMonitorsTable.id, context.params.id))
+      await db.delete(EndpointMonitorsTable).where(eq(EndpointMonitorsTable.id, context.params.id))
 
       await env.MONITOR_TRIGGER_RPC.deleteDo(context.params.id)
     } catch (error) {

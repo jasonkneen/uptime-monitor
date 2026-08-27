@@ -5,10 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { fontVariables } from "@/lib/fonts"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/registry/new-york-v4/ui/sidebar"
+import { SidebarInset, SidebarProvider } from "@/registry/new-york-v4/ui/sidebar"
 import { Toaster } from "@/registry/new-york-v4/ui/sonner"
 
 import "@/app/globals.css"

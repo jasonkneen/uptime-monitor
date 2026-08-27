@@ -2,10 +2,7 @@
 
 import type { endpointMonitorsSelectSchema } from "@solstatus/common/db"
 import { secsToHumanReadable } from "@solstatus/common/utils"
-import {
-  IconBellExclamation,
-  IconLayoutSidebarRightExpand,
-} from "@tabler/icons-react"
+import { IconBellExclamation, IconLayoutSidebarRightExpand } from "@tabler/icons-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import type { z } from "zod"
 import { LatencyLimitChart } from "@/components/latency-limit-chart"
@@ -17,9 +14,7 @@ import { DataTableColumnHeader } from "./column-header"
 import { EndpointMonitorDetailDrawer } from "./endpoint-monitor-detail-drawer"
 
 // Helper function for date formatting
-const formatDate = (
-  value: string | number | Date | null | undefined,
-): string => {
+const formatDate = (value: string | number | Date | null | undefined): string => {
   if (value) {
     const date = new Date(value)
     // Check if the date is valid after parsing
@@ -33,9 +28,7 @@ const formatDate = (
 
 const displayName = (name: string | null | undefined, url: string) => {
   const textToDisplay = name || url
-  return textToDisplay.length > 32
-    ? `${textToDisplay.substring(0, 32)}...`
-    : textToDisplay
+  return textToDisplay.length > 32 ? `${textToDisplay.substring(0, 32)}...` : textToDisplay
 }
 
 // Custom ColumnDef type with optional headerLabel
@@ -43,9 +36,7 @@ export type AppColumnDef<TData> = ColumnDef<TData> & {
   headerLabel?: string
 }
 
-export const columns: AppColumnDef<
-  z.infer<typeof endpointMonitorsSelectSchema>
->[] = [
+export const columns: AppColumnDef<z.infer<typeof endpointMonitorsSelectSchema>>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -74,16 +65,11 @@ export const columns: AppColumnDef<
   },
   {
     accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" className="pl-3" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" className="pl-3" />,
     headerLabel: "Name",
     cell: ({ row }) => {
       return (
-        <a
-          href={`/endpoint-monitors/${row.original.id}`}
-          className="hover:underline pl-3"
-        >
+        <a href={`/endpoint-monitors/${row.original.id}`} className="hover:underline pl-3">
           {displayName(row.original.name, row.original.url)}
         </a>
       )
@@ -112,9 +98,7 @@ export const columns: AppColumnDef<
   },
   {
     accessorKey: "checkInterval",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Check Interval" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Check Interval" />,
     headerLabel: "Check Interval",
     cell: ({ row }) => {
       const seconds = row.getValue("checkInterval") as number
@@ -124,9 +108,7 @@ export const columns: AppColumnDef<
   },
   {
     accessorKey: "consecutiveFailures",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Consecutive Failures" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Consecutive Failures" />,
     headerLabel: "Consecutive Failures",
     cell: ({ row }) => {
       const failures = row.getValue("consecutiveFailures") as number | null
@@ -135,10 +117,7 @@ export const columns: AppColumnDef<
       return (
         <div className="text-center">
           {failures === 1 ? (
-            <Badge
-              variant="secondary"
-              className="!bg-yellow-400 dark:!bg-yellow-700"
-            >
+            <Badge variant="secondary" className="!bg-yellow-400 dark:!bg-yellow-700">
               {failures}
             </Badge>
           ) : failures !== null && failures >= 2 ? (
@@ -154,19 +133,14 @@ export const columns: AppColumnDef<
   },
   {
     accessorKey: "isRunning",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     headerLabel: "Status",
     cell: ({ row }) => {
       const isRunning = row.getValue("isRunning") as boolean
 
       if (isRunning) {
         return (
-          <Badge
-            variant="secondary"
-            className="!bg-green-400 dark:!bg-green-700"
-          >
+          <Badge variant="secondary" className="!bg-green-400 dark:!bg-green-700">
             Running
           </Badge>
         )
@@ -178,9 +152,7 @@ export const columns: AppColumnDef<
   {
     accessorKey: "activeAlert",
     headerLabel: "Alert Status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Alert Status" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Alert Status" />,
     cell: ({ row }) => {
       const hasAlert = row.getValue("activeAlert") as boolean
       return (
@@ -198,9 +170,7 @@ export const columns: AppColumnDef<
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
     headerLabel: "Created At",
     cell: ({ row }) => {
       const value = row.getValue("createdAt")
@@ -210,9 +180,7 @@ export const columns: AppColumnDef<
   },
   {
     accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
-    ),
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Updated At" />,
     headerLabel: "Updated At",
     cell: ({ row }) => {
       const value = row.getValue("updatedAt")
@@ -232,9 +200,7 @@ export const columns: AppColumnDef<
             size="icon"
           >
             <IconLayoutSidebarRightExpand />
-            <span className="sr-only">
-              Open endpoint monitor details drawer
-            </span>
+            <span className="sr-only">Open endpoint monitor details drawer</span>
           </Button>
         }
       />

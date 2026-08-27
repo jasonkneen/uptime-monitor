@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "typescript", "oxc", "react"],
+  "jsPlugins": [
+    {
+      "name": "effect",
+      "specifier": "@mpsuesser/oxlint-plugin-effect"
+    }
+  ],
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.open-next/**",
+    "**/.wrangler/**",
+    "**/tsconfig.json",
+    "nub.lock",
+    "packages/app/src/registry/**",
+    "packages/common/src/db/migrations/**",
+    "packages/app/cloudflare-env.d.ts",
+    "packages/app/next-env.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.config.ts", "**/scripts/**", "src/index.ts"],
+      "rules": {
+        "effect/avoid-process-env": "off",
+        "effect/avoid-node-imports": "off"
+      }
+    }
+  ]
+}

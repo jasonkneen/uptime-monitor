@@ -1,18 +1,13 @@
 import { execSync } from "node:child_process"
 import type { NextConfig } from "next"
 
-// x-release-please-start-version
 const APP_VERSION = "2.1.0"
-// x-release-please-end-version
 
 let gitCommitSHA = "dev"
 console.log(`APP_ENV: ${process.env.APP_ENV}`)
 if (process.env.APP_ENV !== "dev") {
   try {
-    gitCommitSHA = execSync("git rev-parse --short HEAD")
-      .toString()
-      .trim()
-      .substring(0, 7)
+    gitCommitSHA = execSync("git rev-parse --short HEAD").toString().trim().substring(0, 7)
   } catch (error) {
     console.error("Error getting git commit SHA:", error)
   }

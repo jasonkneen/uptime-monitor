@@ -18,8 +18,4 @@ const fontUnbounded = Unbounded({
 })
 export const fontUnboundedCN = fontUnbounded.className
 
-export const fontVariables = cn(
-  fontSans.variable,
-  fontMono.variable,
-  fontUnbounded.variable,
-)
+export const fontVariables = cn(fontSans.variable, fontMono.variable, fontUnbounded.variable)

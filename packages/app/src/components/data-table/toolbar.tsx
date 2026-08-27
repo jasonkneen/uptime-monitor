@@ -1,12 +1,7 @@
 "use client"
 
 import type { endpointMonitorsSelectSchema } from "@solstatus/common/db"
-import {
-  IconChevronDown,
-  IconLayoutColumns,
-  IconSearch,
-  IconX,
-} from "@tabler/icons-react"
+import { IconChevronDown, IconLayoutColumns, IconSearch, IconX } from "@tabler/icons-react"
 import type { Table } from "@tanstack/react-table"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type * as React from "react"
@@ -39,9 +34,7 @@ export function Toolbar({ table }: ToolbarProps) {
   const searchValue = useDataTableStore((state) => state.searchValue)
   const setSearchValue = useDataTableStore((state) => state.setSearchValue)
   const setPagination = useDataTableStore((state) => state.setPagination)
-  const fetchEndpointMonitors = useDataTableStore(
-    (state) => state.fetchEndpointMonitors,
-  )
+  const fetchEndpointMonitors = useDataTableStore((state) => state.fetchEndpointMonitors)
 
   // Debounce search updates to avoid too many requests
   const handleSearch = useDebouncedCallback((term: string) => {
@@ -103,11 +96,7 @@ export function Toolbar({ table }: ToolbarProps) {
           className="w-[200px] lg:w-[300px] pl-8"
         />
         {searchValue && (
-          <Button
-            variant="ghost"
-            onClick={clearSearch}
-            className="absolute right-1 h-6 w-6 p-0"
-          >
+          <Button variant="ghost" onClick={clearSearch} className="absolute right-1 h-6 w-6 p-0">
             <IconX className="h-4 w-4" />
           </Button>
         )}
@@ -125,26 +114,17 @@ export function Toolbar({ table }: ToolbarProps) {
           <DropdownMenuContent align="end" className="w-56">
             {table
               .getAllColumns()
-              .filter(
-                (column) =>
-                  typeof column.accessorFn !== "undefined" &&
-                  column.getCanHide(),
-              )
+              .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
               .map((column) => {
                 const headerLabel =
-                  (
-                    column.columnDef as AppColumnDef<
-                      z.infer<typeof endpointMonitorsSelectSchema>
-                    >
-                  ).headerLabel ?? column.id
+                  (column.columnDef as AppColumnDef<z.infer<typeof endpointMonitorsSelectSchema>>)
+                    .headerLabel ?? column.id
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     onSelect={(e) => e.preventDefault()}
                   >
                     {headerLabel}

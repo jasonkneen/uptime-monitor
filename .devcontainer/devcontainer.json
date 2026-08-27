@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24",
   "postStartCommand": "scripts/bootstrap.sh",
   "customizations": {
     "vscode": {
@@ -9,7 +9,7 @@
         "GitHub.copilot",
         "formulahendry.auto-close-tag",
         "formulahendry.auto-rename-tag",
-        "biomejs.biome",
+        "oxc.oxc-vscode",
         "cloudflare.cloudflare-workers-bindings-extension",
         "streetsidesoftware.code-spell-checker",
         "mikestead.dotenv",

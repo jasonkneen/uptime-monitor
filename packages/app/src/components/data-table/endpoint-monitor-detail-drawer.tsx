@@ -1,9 +1,6 @@
 "use client"
 
-import type {
-  endpointMonitorsSelectSchema,
-  uptimeChecksSelectSchema,
-} from "@solstatus/common/db"
+import type { endpointMonitorsSelectSchema, uptimeChecksSelectSchema } from "@solstatus/common/db"
 import { msToHumanReadable, secsToHumanReadable } from "@solstatus/common/utils"
 import {
   IconAlertTriangle,
@@ -70,9 +67,7 @@ export function EndpointMonitorDetailDrawer({
     setIsLoadingCheck(true)
     setCheckError(null)
     try {
-      const response = await fetch(
-        `/api/endpoint-monitors/${endpointMonitor.id}/uptime`,
-      )
+      const response = await fetch(`/api/endpoint-monitors/${endpointMonitor.id}/uptime`)
       if (!response.ok) {
         if (response.status === 404) {
           setLatestUptimeCheck(null) // No check found yet
@@ -111,19 +106,12 @@ export function EndpointMonitorDetailDrawer({
   )
 
   return (
-    <Drawer
-      direction={isMobile ? "bottom" : "right"}
-      onOpenChange={setIsDrawerOpen}
-    >
+    <Drawer direction={isMobile ? "bottom" : "right"} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>{trigger || defaultTrigger}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle className="break-all">
-            {endpointMonitor.name}
-          </DrawerTitle>
-          <DrawerDescription>
-            Monitor details and configuration
-          </DrawerDescription>
+          <DrawerTitle className="break-all">{endpointMonitor.name}</DrawerTitle>
+          <DrawerDescription>Monitor details and configuration</DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           <div className="grid gap-4">
@@ -152,10 +140,7 @@ export function EndpointMonitorDetailDrawer({
                   <td className="py-2 font-medium text-sm pr-4">Operational</td>
                   <td className="py-2 text-sm text-right">
                     {endpointMonitor.isRunning ? (
-                      <Badge
-                        variant="secondary"
-                        className="!bg-green-400 dark:!bg-green-700"
-                      >
+                      <Badge variant="secondary" className="!bg-green-400 dark:!bg-green-700">
                         Active
                       </Badge>
                     ) : (
@@ -164,33 +149,21 @@ export function EndpointMonitorDetailDrawer({
                   </td>
                 </tr>
                 <tr className="hover:bg-muted">
-                  <td className="py-2 font-medium text-sm pr-4">
-                    Check Interval
-                  </td>
+                  <td className="py-2 font-medium text-sm pr-4">Check Interval</td>
                   <td className="py-2 text-sm text-right">
                     {secsToHumanReadable(endpointMonitor.checkInterval)}
                   </td>
                 </tr>
                 <tr className="hover:bg-muted">
-                  <td className="py-2 font-medium text-sm pr-4">
-                    Alert Status
-                  </td>
+                  <td className="py-2 font-medium text-sm pr-4">Alert Status</td>
                   <td className="py-2 text-sm text-right">
-                    <Badge
-                      variant={
-                        endpointMonitor.activeAlert ? "destructive" : "outline"
-                      }
-                    >
-                      {endpointMonitor.activeAlert
-                        ? "Alert Active"
-                        : "No Alert"}
+                    <Badge variant={endpointMonitor.activeAlert ? "destructive" : "outline"}>
+                      {endpointMonitor.activeAlert ? "Alert Active" : "No Alert"}
                     </Badge>
                   </td>
                 </tr>
                 <tr className="hover:bg-muted">
-                  <td className="py-2 font-medium text-sm pr-4">
-                    Consecutive Failures
-                  </td>
+                  <td className="py-2 font-medium text-sm pr-4">Consecutive Failures</td>
                   <td className="py-2 text-sm text-right">
                     <div className="flex items-center gap-1 justify-end">
                       {endpointMonitor.consecutiveFailures > 0 && (
@@ -201,14 +174,10 @@ export function EndpointMonitorDetailDrawer({
                   </td>
                 </tr>
                 <tr className="hover:bg-muted">
-                  <td className="py-2 font-medium text-sm pr-4">
-                    Expected Status Code
-                  </td>
+                  <td className="py-2 font-medium text-sm pr-4">Expected Status Code</td>
                   <td className="py-2 text-sm text-right">
                     {endpointMonitor.expectedStatusCode ? (
-                      <Badge variant="secondary">
-                        {endpointMonitor.expectedStatusCode}
-                      </Badge>
+                      <Badge variant="secondary">{endpointMonitor.expectedStatusCode}</Badge>
                     ) : (
                       <Badge variant="secondary">2xx/3xx</Badge>
                     )}
@@ -234,11 +203,7 @@ export function EndpointMonitorDetailDrawer({
                       <td className="py-2 text-sm text-right">
                         <div className="flex items-center gap-1 justify-end">
                           <Badge
-                            variant={
-                              latestUptimeCheck.isExpectedStatus
-                                ? "outline"
-                                : "destructive"
-                            }
+                            variant={latestUptimeCheck.isExpectedStatus ? "outline" : "destructive"}
                             className="text-xs px-1.5 py-0.5"
                           >
                             {latestUptimeCheck.isExpectedStatus ? (
@@ -252,18 +217,13 @@ export function EndpointMonitorDetailDrawer({
                       </td>
                     </tr>
                     <tr className="hover:bg-muted">
-                      <td className="py-2 font-medium text-sm pr-4">
-                        HTTP Status Code
-                      </td>
+                      <td className="py-2 font-medium text-sm pr-4">HTTP Status Code</td>
                       <td className="py-2 text-sm text-right">
                         {latestUptimeCheck.status === null ? (
                           <span className="text-gray-500">N/A</span>
                         ) : endpointMonitor.expectedStatusCode ? (
-                          latestUptimeCheck.status ===
-                          endpointMonitor.expectedStatusCode ? (
-                            <span className="text-green-500">
-                              {latestUptimeCheck.status}
-                            </span>
+                          latestUptimeCheck.status === endpointMonitor.expectedStatusCode ? (
+                            <span className="text-green-500">{latestUptimeCheck.status}</span>
                           ) : (
                             <TooltipProvider>
                               <Tooltip>
@@ -273,10 +233,7 @@ export function EndpointMonitorDetailDrawer({
                                   </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>
-                                    Expected:{" "}
-                                    {endpointMonitor.expectedStatusCode}
-                                  </p>
+                                  <p>Expected: {endpointMonitor.expectedStatusCode}</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -286,53 +243,42 @@ export function EndpointMonitorDetailDrawer({
                             {" "}
                             {/* Fallback to original range-based coloring */}
                             {latestUptimeCheck.status <= 299 && (
-                              <span className="text-green-500">
-                                {latestUptimeCheck.status}
+                              <span className="text-green-500">{latestUptimeCheck.status}</span>
+                            )}
+                            {latestUptimeCheck.status >= 300 && latestUptimeCheck.status <= 399 && (
+                              <span className="text-yellow-500">
+                                3xx Redirect: {latestUptimeCheck.status}
                               </span>
                             )}
-                            {latestUptimeCheck.status >= 300 &&
-                              latestUptimeCheck.status <= 399 && (
-                                <span className="text-yellow-500">
-                                  3xx Redirect: {latestUptimeCheck.status}
-                                </span>
-                              )}
-                            {latestUptimeCheck.status >= 400 &&
-                              latestUptimeCheck.status <= 499 && (
-                                <span className="text-orange-500">
-                                  4xx Error: {latestUptimeCheck.status}
-                                </span>
-                              )}
-                            {latestUptimeCheck.status >= 500 &&
-                              latestUptimeCheck.status <= 599 && (
-                                <span className="text-red-500">
-                                  5xx Error: {latestUptimeCheck.status}
-                                </span>
-                              )}
+                            {latestUptimeCheck.status >= 400 && latestUptimeCheck.status <= 499 && (
+                              <span className="text-orange-500">
+                                4xx Error: {latestUptimeCheck.status}
+                              </span>
+                            )}
+                            {latestUptimeCheck.status >= 500 && latestUptimeCheck.status <= 599 && (
+                              <span className="text-red-500">
+                                5xx Error: {latestUptimeCheck.status}
+                              </span>
+                            )}
                           </>
                         )}
                       </td>
                     </tr>
                     <tr className="hover:bg-muted">
-                      <td className="py-2 font-medium text-sm pr-4">
-                        Checked At
-                      </td>
+                      <td className="py-2 font-medium text-sm pr-4">Checked At</td>
                       <td className="py-2 text-sm text-right">
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span className="underline decoration-dashed cursor-help">
-                                {formatDistance(
-                                  new Date(latestUptimeCheck.timestamp),
-                                  new Date(),
-                                  { addSuffix: true },
-                                )}
+                                {formatDistance(new Date(latestUptimeCheck.timestamp), new Date(), {
+                                  addSuffix: true,
+                                })}
                               </span>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>
-                                {new Date(
-                                  latestUptimeCheck.timestamp,
-                                ).toLocaleString(undefined, {
+                                {new Date(latestUptimeCheck.timestamp).toLocaleString(undefined, {
                                   year: "numeric",
                                   month: "numeric",
                                   day: "numeric",
@@ -348,14 +294,9 @@ export function EndpointMonitorDetailDrawer({
                       </td>
                     </tr>
                     <tr className="hover:bg-muted">
-                      <td className="py-2 font-medium text-sm pr-4">
-                        Response Time
-                      </td>
+                      <td className="py-2 font-medium text-sm pr-4">Response Time</td>
                       <td className="py-2 text-sm text-right">
-                        {msToHumanReadable(
-                          latestUptimeCheck.responseTime ?? 0,
-                          true,
-                        )}
+                        {msToHumanReadable(latestUptimeCheck.responseTime ?? 0, true)}
                       </td>
                     </tr>
                   </tbody>
@@ -369,9 +310,7 @@ export function EndpointMonitorDetailDrawer({
 
             <div className="grid grid-cols-2 gap-4 pb-4">
               <div className="flex flex-col gap-1">
-                <span className="font-medium text-muted-foreground">
-                  Created
-                </span>
+                <span className="font-medium text-muted-foreground">Created</span>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -398,9 +337,7 @@ export function EndpointMonitorDetailDrawer({
                 </TooltipProvider>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="font-medium text-muted-foreground">
-                  Last Updated
-                </span>
+                <span className="font-medium text-muted-foreground">Last Updated</span>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -431,9 +368,7 @@ export function EndpointMonitorDetailDrawer({
         </div>
         <DrawerFooter className="flex-col gap-4">
           <Button variant="primary" asChild>
-            <a href={`/endpoint-monitors/${endpointMonitor.id}`}>
-              View Detailed Analytics
-            </a>
+            <a href={`/endpoint-monitors/${endpointMonitor.id}`}>View Detailed Analytics</a>
           </Button>
 
           <div className="flex gap-3 justify-stretch w-full">

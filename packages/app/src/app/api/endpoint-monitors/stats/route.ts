@@ -1,13 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare"
-import {
-  takeFirstOrNull,
-  takeUniqueOrThrow,
-  useDrizzle,
-} from "@solstatus/common/db"
-import {
-  EndpointMonitorsTable,
-  UptimeChecksTable,
-} from "@solstatus/common/db/schema"
+import { takeFirstOrNull, takeUniqueOrThrow, useDrizzle } from "@solstatus/common/db"
+import { EndpointMonitorsTable, UptimeChecksTable } from "@solstatus/common/db/schema"
 import { and, count, desc, eq, gt, isNotNull } from "drizzle-orm"
 import { StatusCodes } from "http-status-codes"
 import { NextResponse } from "next/server"
@@ -54,15 +47,11 @@ export const GET = createRoute.handler(async (_request, _context) => {
     const highestCheck = await db
       .select({
         highestResponseTime: UptimeChecksTable.responseTime,
-        highestResponseTimeEndpointMonitorId:
-          UptimeChecksTable.endpointMonitorId,
+        highestResponseTimeEndpointMonitorId: UptimeChecksTable.endpointMonitorId,
       })
       .from(UptimeChecksTable)
       .where(
-        and(
-          gt(UptimeChecksTable.timestamp, oneDayAgo),
-          isNotNull(UptimeChecksTable.responseTime),
-        ),
+        and(gt(UptimeChecksTable.timestamp, oneDayAgo), isNotNull(UptimeChecksTable.responseTime)),
       )
       .orderBy(desc(UptimeChecksTable.responseTime))
       .limit(1)
@@ -77,12 +66,9 @@ export const GET = createRoute.handler(async (_request, _context) => {
       .where(gt(UptimeChecksTable.timestamp, oneDayAgo))
 
     const totalChecks = checksResult.length
-    const successfulChecks = checksResult.filter(
-      (check) => check.isExpectedStatus,
-    ).length
+    const successfulChecks = checksResult.filter((check) => check.isExpectedStatus).length
 
-    const uptimePercentage =
-      totalChecks > 0 ? (successfulChecks / totalChecks) * 100 : 100
+    const uptimePercentage = totalChecks > 0 ? (successfulChecks / totalChecks) * 100 : 100
 
     return NextResponse.json(
       {

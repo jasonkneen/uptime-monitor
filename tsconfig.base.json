@@ -13,9 +13,9 @@
     // Specify how TypeScript looks up a file from a given module specifier.
     "moduleResolution": "bundler",
 
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
+    "composite": false,
+    "declaration": false,
+    "noEmit": true,
     "sourceMap": true,
 
     // Enable importing .json files
@@ -26,9 +26,6 @@
 
     // Enable error reporting in type-checked JavaScript files.
     "checkJs": false,
-
-    // Disable emitting files from a compilation.
-    "noEmit": false,
 
     // Ensure that each file can be safely transpiled without relying on other imports.
     "isolatedModules": true,
@@ -45,10 +42,9 @@
 
     // "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "downlevelIteration": true,
     "allowJs": true,
     "esModuleInterop": true,
     "skipDefaultLibCheck": true,
-    "incremental": true
+    "incremental": false
   }
 }

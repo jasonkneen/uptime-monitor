@@ -1,11 +1,5 @@
-import type {
-  MonitorExecWorkerResource,
-  MonitorTriggerWorkerResource,
-} from "@solstatus/api/infra"
-import type {
-  DBResource,
-  SessionsStorageKVResource,
-} from "@solstatus/common/infra"
+import type { MonitorExecWorkerResource, MonitorTriggerWorkerResource } from "@solstatus/api/infra"
+import type { DBResource, SessionsStorageKVResource } from "@solstatus/common/infra"
 import alchemy from "alchemy"
 import { KVNamespace, Website } from "alchemy/cloudflare"
 
@@ -27,7 +21,7 @@ export async function createApp(
 
   const app = await Website(appName, {
     name: appName,
-    command: "pnpm build:opennextjs",
+    command: "nub run build:opennextjs",
     main: ".open-next/worker.js",
     assets: ".open-next/assets",
     url: !fqdn,

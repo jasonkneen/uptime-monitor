@@ -2,19 +2,8 @@
 
 import type { endpointMonitorsSelectSchema } from "@solstatus/common/db"
 import type { InfraMetadata } from "@solstatus/common/utils/types"
-import {
-  IconActivity,
-  IconLogs,
-  IconMetronome,
-  IconPencil,
-} from "@tabler/icons-react"
-import {
-  ExternalLink,
-  MoreVertical,
-  Pause,
-  Play,
-  RefreshCw,
-} from "lucide-react"
+import { IconActivity, IconLogs, IconMetronome, IconPencil } from "@tabler/icons-react"
+import { ExternalLink, MoreVertical, Pause, Play, RefreshCw } from "lucide-react"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import type { z } from "zod"
@@ -64,8 +53,7 @@ function formatUrl(url: string, maxLength: number): string {
         // Start from the end and work backwards
         for (let i = pathParts.length - 1; i >= 0; i--) {
           const part = pathParts[i]
-          const tentativePath =
-            i === pathParts.length - 1 ? `/${part}` : `/${part}${pathToShow}`
+          const tentativePath = i === pathParts.length - 1 ? `/${part}` : `/${part}${pathToShow}`
 
           if (tentativePath.length <= remainingSpace) {
             pathToShow = tentativePath
@@ -78,10 +66,7 @@ function formatUrl(url: string, maxLength: number): string {
           } else {
             // If even one segment is too long, truncate it
             if (pathToShow === "") {
-              const truncatedPart = part.substring(
-                0,
-                Math.max(0, remainingSpace - 4),
-              ) // -4 for "/..."
+              const truncatedPart = part.substring(0, Math.max(0, remainingSpace - 4)) // -4 for "/..."
               pathToShow = `/${truncatedPart}...`
             }
             isPartialPath = true
@@ -130,9 +115,7 @@ export function EndpointMonitorDetailHeader({
     setIsLoading(true)
 
     try {
-      const response = await fetch(
-        `/api/endpoint-monitors/${endpointMonitor.id}/execute-check`,
-      )
+      const response = await fetch(`/api/endpoint-monitors/${endpointMonitor.id}/execute-check`)
       if (!response.ok) {
         throw new Error("Failed to execute check")
       }
@@ -155,12 +138,9 @@ export function EndpointMonitorDetailHeader({
   const pauseMonitoring = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(
-        `/api/endpoint-monitors/${endpointMonitor.id}/pause`,
-        {
-          method: "POST",
-        },
-      )
+      const response = await fetch(`/api/endpoint-monitors/${endpointMonitor.id}/pause`, {
+        method: "POST",
+      })
       if (!response.ok) {
         throw new Error("Failed to pause monitoring")
       }
@@ -183,12 +163,9 @@ export function EndpointMonitorDetailHeader({
   const resumeMonitoring = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(
-        `/api/endpoint-monitors/${endpointMonitor.id}/resume`,
-        {
-          method: "POST",
-        },
-      )
+      const response = await fetch(`/api/endpoint-monitors/${endpointMonitor.id}/resume`, {
+        method: "POST",
+      })
       console.log("response", response)
       if (!response.ok) {
         throw new Error("Failed to resume monitoring")
@@ -221,21 +198,11 @@ export function EndpointMonitorDetailHeader({
         >
           <ExternalLink className="absolute -left-6 h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           <span className="overflow-hidden text-ellipsis">
-            <span className="sm:hidden">
-              {formatUrl(endpointMonitor.url, 16)}
-            </span>
-            <span className="hidden sm:inline md:hidden">
-              {formatUrl(endpointMonitor.url, 24)}
-            </span>
-            <span className="hidden md:inline lg:hidden">
-              {formatUrl(endpointMonitor.url, 40)}
-            </span>
-            <span className="hidden lg:inline xl:hidden">
-              {formatUrl(endpointMonitor.url, 60)}
-            </span>
-            <span className="hidden xl:inline">
-              {formatUrl(endpointMonitor.url, 80)}
-            </span>
+            <span className="sm:hidden">{formatUrl(endpointMonitor.url, 16)}</span>
+            <span className="hidden sm:inline md:hidden">{formatUrl(endpointMonitor.url, 24)}</span>
+            <span className="hidden md:inline lg:hidden">{formatUrl(endpointMonitor.url, 40)}</span>
+            <span className="hidden lg:inline xl:hidden">{formatUrl(endpointMonitor.url, 60)}</span>
+            <span className="hidden xl:inline">{formatUrl(endpointMonitor.url, 80)}</span>
           </span>
         </a>
 
@@ -248,9 +215,7 @@ export function EndpointMonitorDetailHeader({
               <span>2xx/3xx</span>
             )}
           </Badge>
-          <Badge variant="secondary">
-            Alert Threshold: {endpointMonitor.alertThreshold}
-          </Badge>
+          <Badge variant="secondary">Alert Threshold: {endpointMonitor.alertThreshold}</Badge>
         </div>
       </div>
       <div className="flex flex-col sm:flex-row gap-4">

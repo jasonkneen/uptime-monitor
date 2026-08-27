@@ -14,12 +14,8 @@ import { useDataTableStore } from "@/store/data-table-store"
 export default function Page() {
   const { setHeaderLeftContent, setHeaderRightContent } = useHeaderContentOnly()
 
-  const fetchEndpointMonitors = useDataTableStore(
-    (state) => state.fetchEndpointMonitors,
-  )
-  const fetchDashboardStats = useStatsStore(
-    (state) => state.fetchDashboardStats,
-  )
+  const fetchEndpointMonitors = useDataTableStore((state) => state.fetchEndpointMonitors)
+  const fetchDashboardStats = useStatsStore((state) => state.fetchDashboardStats)
 
   const refreshDashboardData = useCallback(async () => {
     await Promise.all([fetchEndpointMonitors(), fetchDashboardStats()])
@@ -46,12 +42,7 @@ export default function Page() {
         }
       />,
     )
-  }, [
-    setHeaderLeftContent,
-    setHeaderRightContent,
-    fetchEndpointMonitors,
-    fetchDashboardStats,
-  ])
+  }, [setHeaderLeftContent, setHeaderRightContent, fetchEndpointMonitors, fetchDashboardStats])
 
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">

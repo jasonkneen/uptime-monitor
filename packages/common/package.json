@@ -3,27 +3,27 @@
   "version": "2.1.0",
   "description": "Common utilities and database schemas for SolStatus",
   "keywords": [
-    "solstatus",
     "database",
     "schema",
+    "solstatus",
     "utilities"
   ],
-  "homepage": "https://github.com/unibeck/solstatus/tree/main/packages/common#readme",
+  "homepage": "https://github.com/jonbeckman/solstatus/tree/master/packages/common#readme",
   "bugs": {
-    "url": "https://github.com/unibeck/solstatus/issues"
+    "url": "https://github.com/jonbeckman/solstatus/issues"
   },
+  "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unibeck/solstatus.git",
+    "url": "git+https://github.com/jonbeckman/solstatus.git",
     "directory": "packages/common"
   },
-  "license": "MIT",
-  "type": "module",
   "files": [
     "src",
     "infra",
     "README.md"
   ],
+  "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./infra": "./infra/index.ts",
@@ -35,22 +35,19 @@
     "./utils/*": "./src/utils/*.ts"
   },
   "scripts": {
-    "format": "biome check . --write",
     "types": "tsc"
   },
   "dependencies": {
-    "drizzle-orm": "catalog:",
-    "drizzle-seed": "catalog:",
-    "drizzle-zod": "catalog:",
+    "alchemy": "^0.43.0",
+    "drizzle-orm": "1.0.0-rc.5-ab785fc",
+    "drizzle-seed": "1.0.0-rc.5-ab785fc",
     "nanoid": "^5.1.5",
-    "zod": "catalog:",
-    "alchemy": "catalog:"
+    "zod": "4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
-    "@cloudflare/workers-types": "catalog:",
-    "@types/node": "catalog:",
-    "drizzle-kit": "catalog:",
-    "typescript": "catalog:"
+    "@cloudflare/workers-types": "^4.20250702.0",
+    "@types/node": "^24.12.4",
+    "drizzle-kit": "1.0.0-rc.5-ab785fc",
+    "typescript": "7.0.2"
   }
 }

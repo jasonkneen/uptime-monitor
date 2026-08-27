@@ -48,7 +48,7 @@ const seedDatabase = async () => {
   const client = createClient({
     url: `file:${pathToDb}`,
   })
-  const db = drizzle(client)
+  const db = drizzle({ client })
 
   console.log("Resetting database...")
   await reset(db, schema)
@@ -63,8 +63,7 @@ const seedDatabase = async () => {
         id: createId(PRE_ID.endpointMonitor),
         url: url,
         name: `${domain.charAt(0).toUpperCase() + domain.slice(1)}`,
-        checkInterval:
-          checkIntervals[Math.floor(Math.random() * checkIntervals.length)],
+        checkInterval: checkIntervals[Math.floor(Math.random() * checkIntervals.length)],
       }
     })
     await db.insert(schema.EndpointMonitorsTable).values(seedEndpointMonitors)
@@ -77,24 +76,21 @@ const seedDatabase = async () => {
     for (const endpointMonitor of seedEndpointMonitors) {
       const checksToCreate = Math.floor(Math.random() * 201) + 100 // Random number between 100-300
       const timeSpan = now.getTime() - twoWeeksAgo.getTime()
-      const checksPerInterval =
-        timeSpan / (endpointMonitor.checkInterval * 1000)
+      const checksPerInterval = timeSpan / (endpointMonitor.checkInterval * 1000)
       const skipFactor = Math.floor(checksPerInterval / checksToCreate)
 
-      const uptimeChecks: z.infer<typeof uptimeChecksInsertSchema>[] =
-        Array.from({ length: checksToCreate }, (_, i) => {
+      const uptimeChecks: z.infer<typeof uptimeChecksInsertSchema>[] = Array.from(
+        { length: checksToCreate },
+        (_, i) => {
           const timestamp = new Date(
-            twoWeeksAgo.getTime() +
-              i * skipFactor * endpointMonitor.checkInterval * 1000,
+            twoWeeksAgo.getTime() + i * skipFactor * endpointMonitor.checkInterval * 1000,
           )
 
           // 95% chance of success
           const isSuccess = Math.random() < 0.95
 
           // 100-1000ms for success, 15000 second timeout for failure
-          const responseTime = isSuccess
-            ? Math.floor(Math.random() * 900) + 100
-            : 15000
+          const responseTime = isSuccess ? Math.floor(Math.random() * 900) + 100 : 15000
 
           return {
             endpointMonitorId: endpointMonitor.id,
@@ -103,7 +99,8 @@ const seedDatabase = async () => {
             status: isSuccess ? 200 : 504,
             responseTime,
           }
-        })
+        },
+      )
 
       // Insert checks in chunks to avoid SQLite limits
       const chunkSize = 100

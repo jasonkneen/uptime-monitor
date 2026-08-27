@@ -1,0 +1,8 @@
+core:changelogs: []
+core:packages: []
+npm:packages:
+  - id: npm:solstatus
+  - id: npm:@solstatus/common
+  - id: npm:@solstatus/api
+  - id: npm:@solstatus/app
+  - id: npm:@solstatus/infra

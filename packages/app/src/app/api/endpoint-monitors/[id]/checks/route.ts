@@ -30,9 +30,7 @@ export const GET = createRoute
     try {
       // Calculate start time based on time range
       const startTime = new Date()
-      startTime.setMinutes(
-        startTime.getMinutes() - getTimeRangeInMinutes(timeRange as TimeRange),
-      )
+      startTime.setMinutes(startTime.getMinutes() - getTimeRangeInMinutes(timeRange as TimeRange))
 
       const results = await db
         .select()

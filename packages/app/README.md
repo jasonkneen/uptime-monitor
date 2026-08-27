@@ -2,8 +2,8 @@
 
 ## Overview
 Standard NextJS v15, shadcn, TailwindCSS v4, and Drizzle stack. Some other notable points:
-- pnpm as package manager
-- biome as linter/formatter
+- nub as package manager
+- oxlint and oxfmt as linter/formatter
 - zustand for state management
 - opennext with the CF adapter (not that it changes much)
 - OpenAPI support via scalar

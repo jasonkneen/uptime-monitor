@@ -4,13 +4,10 @@
     "./infra/**/*.ts",
     "./src/**/*.ts",
     "./src/**/*.tsx",
+    "./src/css.d.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "public"
-  ],
+  "exclude": ["node_modules", "dist", "public"],
   "compilerOptions": {
     "types": [
       "@types/node",
@@ -18,15 +15,10 @@
       "./cloudflare-env.d.ts",
       "./next-env.d.ts"
     ],
-    "baseUrl": "./",
     "rootDir": "./",
     "paths": {
-      "@/infra/*": [
-        "./infra/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      "@/infra/*": ["./infra/*"],
+      "@/*": ["./src/*"]
     },
     "outDir": "./dist",
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
@@ -40,13 +32,5 @@
       }
     ],
     "module": "esnext"
-  },
-  "references": [
-    {
-      "path": "../common"
-    },
-    {
-      "path": "../api"
-    }
-  ]
+  }
 }

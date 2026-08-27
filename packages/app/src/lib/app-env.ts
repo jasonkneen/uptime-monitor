@@ -14,7 +14,7 @@ export enum AppEnvID {
   PROD = "prod",
 }
 
-// biome-ignore lint/suspicious/noEmptyInterface: This app env concept is not used yet
+// Empty until app-env metadata is used.
 export interface AppEnvMetadata {}
 
 const AppEnvs: { [value in AppEnvID]: AppEnvMetadata } = {

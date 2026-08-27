@@ -13,15 +13,7 @@ import {
 } from "date-fns"
 import type React from "react"
 import { memo, useMemo } from "react"
-import {
-  Area,
-  AreaChart,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import type { z } from "zod"
 import type { TimeRange } from "@/types/endpointMonitor"
 import { ChartLoadingOverlay } from "./chart-loading-overlay"
@@ -145,10 +137,7 @@ const processData = (
     [key: number]: { values: number[]; count: number; sum: number }
   } = {}
   for (const point of data) {
-    const bucketStartSeconds = getTimeBucketStart(
-      new Date(point.timestamp).getTime(),
-      range,
-    )
+    const bucketStartSeconds = getTimeBucketStart(new Date(point.timestamp).getTime(), range)
     if (bucketStartSeconds * 1000 >= startTime.getTime()) {
       if (!aggregatedData[bucketStartSeconds]) {
         aggregatedData[bucketStartSeconds] = { values: [], count: 0, sum: 0 }
@@ -233,9 +222,7 @@ const processData = (
       }
     }
 
-    currentBucketTime = new Date(
-      currentBucketTime.getTime() + intervalMinutes * 60000,
-    )
+    currentBucketTime = new Date(currentBucketTime.getTime() + intervalMinutes * 60000)
   }
 
   for (let i = 0; i < processedData.length; i++) {
@@ -265,8 +252,7 @@ const processData = (
         nextPoint.avgLatency !== null
       ) {
         const timeDiffTotal = nextPoint.timeBucket - prevPoint.timeBucket
-        const timeDiffCurrent =
-          processedData[i].timeBucket - prevPoint.timeBucket
+        const timeDiffCurrent = processedData[i].timeBucket - prevPoint.timeBucket
         if (timeDiffTotal > 0) {
           const valueDiff = nextPoint.avgLatency - prevPoint.avgLatency
           processedData[i].avgLatency =
@@ -402,8 +388,7 @@ const LatencyRangeChart: React.FC<LatencyRangeChartProps> = memo(
       if (processedData.length > 0) {
         let startTime: number
         const endTime = Math.floor(Date.now() / 1000)
-        const lastBucketTime =
-          processedData[processedData.length - 1]?.timeBucket ?? endTime
+        const lastBucketTime = processedData[processedData.length - 1]?.timeBucket ?? endTime
 
         switch (timeRange) {
           case "30m":
@@ -457,10 +442,7 @@ const LatencyRangeChart: React.FC<LatencyRangeChartProps> = memo(
         }
       }
 
-      if (
-        minVal === Number.POSITIVE_INFINITY ||
-        maxVal === Number.NEGATIVE_INFINITY
-      ) {
+      if (minVal === Number.POSITIVE_INFINITY || maxVal === Number.NEGATIVE_INFINITY) {
         return [0, 100]
       }
 
