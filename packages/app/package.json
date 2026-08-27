@@ -25,8 +25,7 @@
     "public",
     "README.md",
     "vite.config.ts",
-    "tailwind.config.ts",
-    "postcss.config.ts"
+    "tailwind.config.ts"
   ],
   "type": "module",
   "exports": {

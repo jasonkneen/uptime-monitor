@@ -19,6 +19,18 @@ function sampleCheck(endpointMonitorId: string, minutesAgo: number) {
   }
 }
 
+function cloudflareWorkersStubPlugin(): Plugin {
+  return {
+    name: "solstatus-cloudflare-workers-stub",
+    resolveId(id) {
+      if (id === "cloudflare:workers" && process.env.SOLSTATUS_DEV_MOCK_API === "1") {
+        return resolve(__dirname, "src/dev/cloudflare-workers-stub.ts")
+      }
+      return undefined
+    },
+  }
+}
+
 function mockApiPlugin(): Plugin {
   const monitors: SampleMonitor[] = SAMPLE_MONITORS.map((monitor) => ({ ...monitor }))
 
@@ -157,6 +169,12 @@ export default defineConfig(async () => {
         external: ["cloudflare:workers"],
       },
     },
-    plugins: [mockApiPlugin(), tailwindcss(), tanstackStart(), react()],
+    plugins: [
+      cloudflareWorkersStubPlugin(),
+      mockApiPlugin(),
+      tailwindcss(),
+      tanstackStart(),
+      react(),
+    ],
   }
 })

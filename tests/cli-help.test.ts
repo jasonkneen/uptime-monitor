@@ -10,6 +10,6 @@ describe("solstatus CLI", () => {
 
     expect(output).toMatch(/solstatus/)
     expect(output).toMatch(/phase|stage/i)
-    expect(output).not.toMatch(/@effect\/cli/)
+    expect(output).toMatch(/effect\/unstable\/cli/)
   })
 })
