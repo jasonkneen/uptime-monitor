@@ -1,14 +1,8 @@
 "use client"
 
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react"
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
-import { siteConfig } from "@/app/site"
+import { siteConfig } from "@/lib/site"
 
 const COOKIE_NAME = "active_theme"
 

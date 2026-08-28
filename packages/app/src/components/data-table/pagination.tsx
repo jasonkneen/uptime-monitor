@@ -29,15 +29,10 @@ export function Pagination({ table }: PaginationProps) {
   "use no memo"
   const rowsPerPageId = useId()
   const pagination = useDataTableStore((state) => state.pagination)
-  const totalEndpointMonitors = useDataTableStore(
-    (state) => state.totalEndpointMonitors,
-  )
+  const totalEndpointMonitors = useDataTableStore((state) => state.totalEndpointMonitors)
 
   // Calculate page count locally to ensure it's consistent
-  const pageCount = Math.max(
-    1,
-    Math.ceil(totalEndpointMonitors / pagination.pageSize),
-  )
+  const pageCount = Math.max(1, Math.ceil(totalEndpointMonitors / pagination.pageSize))
 
   // Function to handle page changes - Simplified to rely on table handler
   const changePage = React.useCallback(

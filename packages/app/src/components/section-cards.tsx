@@ -76,9 +76,7 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Monitored endpoints
-          </div>
+          <div className="line-clamp-1 flex gap-2 font-medium">Monitored endpoints</div>
           {/* TODO: Show number of active endpoints */}
           {/* <div className="text-muted-foreground">
             Total endpoints being monitored
@@ -92,14 +90,8 @@ export function SectionCards() {
             {data.sitesWithAlerts}
           </CardTitle>
           <CardAction>
-            <Badge
-              variant={data.sitesWithAlerts > 0 ? "destructive" : "outline"}
-            >
-              {data.sitesWithAlerts > 0 ? (
-                <IconBellExclamation />
-              ) : (
-                <IconBellCheck />
-              )}
+            <Badge variant={data.sitesWithAlerts > 0 ? "destructive" : "outline"}>
+              {data.sitesWithAlerts > 0 ? <IconBellExclamation /> : <IconBellCheck />}
               {data.sitesWithAlerts > 0 ? "Action Needed" : "All Clear"}
             </Badge>
           </CardAction>
@@ -110,9 +102,7 @@ export function SectionCards() {
               ? `${data.sitesWithAlerts} site${data.sitesWithAlerts !== 1 ? "s" : ""} with active alerts`
               : "No active alerts"}
           </div>
-          <div className="text-muted-foreground">
-            Endpoint Monitors requiring attention
-          </div>
+          <div className="text-muted-foreground">Endpoint Monitors requiring attention</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
@@ -122,16 +112,8 @@ export function SectionCards() {
             {msToHumanReadable(data.highestResponseTime, true)}
           </CardTitle>
           <CardAction>
-            <Badge
-              variant={
-                data.highestResponseTime > 1000 ? "destructive" : "outline"
-              }
-            >
-              {data.highestResponseTime > 1000 ? (
-                <IconTrendingDown />
-              ) : (
-                <IconTrendingUp />
-              )}
+            <Badge variant={data.highestResponseTime > 1000 ? "destructive" : "outline"}>
+              {data.highestResponseTime > 1000 ? <IconTrendingDown /> : <IconTrendingUp />}
               {data.highestResponseTime > 1000 ? "Slow" : "Fast"}
             </Badge>
           </CardAction>
@@ -153,9 +135,7 @@ export function SectionCards() {
               <span>Last 24 hours</span>
             )}
           </div>
-          <div className="text-muted-foreground">
-            Highest latency in the last 24 hours
-          </div>
+          <div className="text-muted-foreground">Highest latency in the last 24 hours</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
@@ -165,18 +145,14 @@ export function SectionCards() {
             {data.uptimePercentage}%
           </CardTitle>
           <CardAction>
-            <Badge
-              variant={data.uptimePercentage < 99 ? "destructive" : "outline"}
-            >
+            <Badge variant={data.uptimePercentage < 99 ? "destructive" : "outline"}>
               {data.uptimePercentage < 99 ? <IconTargetOff /> : <IconTarget />}
               {data.uptimePercentage < 99 ? "Below Target" : "On Target"}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Last 24 hours
-          </div>
+          <div className="line-clamp-1 flex gap-2 font-medium">Last 24 hours</div>
           <div className="text-muted-foreground">Overall uptime percentage</div>
         </CardFooter>
       </Card>

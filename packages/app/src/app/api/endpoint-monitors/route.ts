@@ -1,4 +1,4 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import type { InitPayload } from "@solstatus/api/monitor-trigger"
 import {
   endpointMonitorsInsertDTOSchema,
@@ -11,7 +11,7 @@ import { createId, PRE_ID } from "@solstatus/common/utils"
 import { and, asc, count, desc, eq, like, sql } from "drizzle-orm"
 import type { SQLiteColumn } from "drizzle-orm/sqlite-core"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { z } from "zod"
 import { createRoute } from "@/lib/api-utils"
 import { paginationQuerySchema } from "@/lib/route-schemas"
@@ -39,79 +39,66 @@ const extendedQuerySchema = paginationQuerySchema().extend({
   checkIntervalMax: z.number().optional(),
 })
 
-export const GET = createRoute
-  .query(extendedQuerySchema)
-  .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
-    const db = useDrizzle(env.DB)
+export const GET = createRoute.query(extendedQuerySchema).handler(async (_request, context) => {
+  const { env } = getWorkerEnv()
+  const db = useDrizzle(env.DB)
 
-    const {
-      pageSize,
-      page,
-      orderBy: orderByParam,
-      order: orderParam,
-      search,
-      isRunning,
-      checkIntervalMin,
-      checkIntervalMax,
-    } = context.query
+  const {
+    pageSize,
+    page,
+    orderBy: orderByParam,
+    order: orderParam,
+    search,
+    isRunning,
+    checkIntervalMin,
+    checkIntervalMax,
+  } = context.query
 
-    // Set default sorting if not provided
-    const orderBy = orderByParam ?? "consecutiveFailures"
-    const order = orderParam ?? "desc"
+  // Set default sorting if not provided
+  const orderBy = orderByParam ?? "consecutiveFailures"
+  const order = orderParam ?? "desc"
 
-    console.log(
-      pageSize,
-      page,
-      orderBy,
-      order,
-      search,
-      isRunning,
-      checkIntervalMin,
-      checkIntervalMax,
-    )
+  console.log(pageSize, page, orderBy, order, search, isRunning, checkIntervalMin, checkIntervalMax)
 
-    const orderByCol = getColumn(orderBy)
-    const orderDir = getOrderDirection(order as "asc" | "desc")
+  const orderByCol = getColumn(orderBy)
+  const orderDir = getOrderDirection(order as "asc" | "desc")
 
-    // Create the where conditions first so we can reuse them for both queries
-    const whereConditions = and(
-      search
-        ? sql`(${like(EndpointMonitorsTable.name, `%${search}%`)} OR ${like(EndpointMonitorsTable.url, `%${search}%`)})`
-        : sql`1=1`,
-      isRunning !== undefined
-        ? eq(EndpointMonitorsTable.isRunning, isRunning === "true")
-        : sql`1=1`,
-      checkIntervalMin !== undefined
-        ? sql`${EndpointMonitorsTable.checkInterval} >= ${checkIntervalMin}`
-        : sql`1=1`,
-      checkIntervalMax !== undefined
-        ? sql`${EndpointMonitorsTable.checkInterval} <= ${checkIntervalMax}`
-        : sql`1=1`,
-    )
+  // Create the where conditions first so we can reuse them for both queries
+  const whereConditions = and(
+    search
+      ? sql`(${like(EndpointMonitorsTable.name, `%${search}%`)} OR ${like(EndpointMonitorsTable.url, `%${search}%`)})`
+      : sql`1=1`,
+    isRunning !== undefined ? eq(EndpointMonitorsTable.isRunning, isRunning === "true") : sql`1=1`,
+    checkIntervalMin !== undefined
+      ? sql`${EndpointMonitorsTable.checkInterval} >= ${checkIntervalMin}`
+      : sql`1=1`,
+    checkIntervalMax !== undefined
+      ? sql`${EndpointMonitorsTable.checkInterval} <= ${checkIntervalMax}`
+      : sql`1=1`,
+  )
 
-    // Get paginated endpointMonitors
-    const endpointMonitors = await db
-      .select()
-      .from(EndpointMonitorsTable)
-      .where(whereConditions)
-      .orderBy(orderDir(orderByCol), asc(EndpointMonitorsTable.id))
-      .limit(pageSize)
-      .offset(page * pageSize)
+  // Get paginated endpointMonitors
+  const endpointMonitors = await db
+    .select()
+    .from(EndpointMonitorsTable)
+    .where(whereConditions)
+    .orderBy(orderDir(orderByCol), asc(EndpointMonitorsTable.id))
+    .limit(pageSize)
+    .offset(page * pageSize)
 
-    // Get total count with the same filters
-    const { count: totalCount } = await db
-      .select({ count: count() })
-      .from(EndpointMonitorsTable)
-      .where(whereConditions)
-      .then(takeUniqueOrThrow)
+  // Get total count with the same filters
+  const { count: totalCount } = await db
+    .select({ count: count() })
+    .from(EndpointMonitorsTable)
+    .where(whereConditions)
+    .then(takeUniqueOrThrow)
 
-    // Return endpointMonitors and total count
-    return NextResponse.json({
-      data: endpointMonitors,
-      totalCount,
-    })
+  // Return endpointMonitors and total count
+  return NextResponse.json({
+    data: endpointMonitors,
+    totalCount,
   })
+})
 
 /**
  * POST /api/endpoint-monitors
@@ -125,26 +112,21 @@ export const GET = createRoute
 export const POST = createRoute
   .body(endpointMonitorsInsertDTOSchema)
   .handler(async (_request, context) => {
-    const endpointMonitor: z.infer<typeof endpointMonitorsInsertDTOSchema> =
-      context.body
+    const endpointMonitor: z.infer<typeof endpointMonitorsInsertDTOSchema> = context.body
 
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
 
     // Normalize the URL to remove the protocol
     const normalizedUrl = endpointMonitor.url.replace(/(^\w+:|^)\/\//, "")
-    const existingEndpointMonitors: z.infer<
-      typeof endpointMonitorsSelectSchema
-    >[] = await db
+    const existingEndpointMonitors: z.infer<typeof endpointMonitorsSelectSchema>[] = await db
       .select()
       .from(EndpointMonitorsTable)
       .where(sql.raw(`instr(url, '${normalizedUrl}') > 0`))
 
     const matchingWebsite = existingEndpointMonitors.find((endpointMonitor) => {
       const websiteUrl = endpointMonitor.url.replace(/(^\w+:|^)\/\//, "")
-      return (
-        websiteUrl.endsWith(normalizedUrl) || normalizedUrl.endsWith(websiteUrl)
-      )
+      return websiteUrl.endsWith(normalizedUrl) || normalizedUrl.endsWith(websiteUrl)
     })
 
     if (matchingWebsite) {
@@ -153,13 +135,11 @@ export const POST = createRoute
       )
       return NextResponse.json(
         {
-          message: `A monitor with a similar URL already exists. ${JSON.stringify(
-            {
-              provided: endpointMonitor.url,
-              searched: normalizedUrl,
-              found: matchingWebsite.url,
-            },
-          )}`,
+          message: `A monitor with a similar URL already exists. ${JSON.stringify({
+            provided: endpointMonitor.url,
+            searched: normalizedUrl,
+            found: matchingWebsite.url,
+          })}`,
           matchingEndpointMonitor: matchingWebsite,
         } as const satisfies ConflictEndpointMonitorResponse,
         {
@@ -193,7 +173,5 @@ function getOrderDirection(direction: "asc" | "desc") {
 }
 
 function getColumn(columnName: string): SQLiteColumn {
-  return EndpointMonitorsTable[
-    columnName as keyof typeof EndpointMonitorsTable
-  ] as SQLiteColumn
+  return EndpointMonitorsTable[columnName as keyof typeof EndpointMonitorsTable] as SQLiteColumn
 }

@@ -13,6 +13,5 @@ export const useDialogStore = create<DialogState>((set) => ({
   isEditEndpointMonitorDialogOpen: false,
 
   // Actions
-  setEditEndpointMonitorDialogOpen: (isOpen) =>
-    set({ isEditEndpointMonitorDialogOpen: isOpen }),
+  setEditEndpointMonitorDialogOpen: (isOpen) => set({ isEditEndpointMonitorDialogOpen: isOpen }),
 }))

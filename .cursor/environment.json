@@ -1,0 +1,19 @@
+{
+  "name": "solstatus",
+  "install": "./scripts/cloud-agent-install.sh",
+  "start": "./scripts/cloud-agent-start.sh",
+  "ports": [
+    {
+      "name": "app",
+      "port": 3000
+    },
+    {
+      "name": "api-exec",
+      "port": 8787
+    },
+    {
+      "name": "api-trigger",
+      "port": 8788
+    }
+  ]
+}

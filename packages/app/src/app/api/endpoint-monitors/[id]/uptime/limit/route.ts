@@ -1,10 +1,10 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare"
+import { getWorkerEnv } from "@/lib/worker-env"
 import type { uptimeChecksSelectSchema } from "@solstatus/common/db"
 import { useDrizzle } from "@solstatus/common/db"
 import { UptimeChecksTable } from "@solstatus/common/db/schema"
 import { and, desc, eq, isNotNull } from "drizzle-orm"
 import { StatusCodes } from "http-status-codes"
-import { NextResponse } from "next/server"
+import { NextResponse } from "@/lib/http"
 import { z } from "zod"
 import { createRoute } from "@/lib/api-utils"
 import { idStringParamsSchema } from "@/lib/route-schemas"
@@ -27,7 +27,7 @@ export const GET = createRoute
   .params(idStringParamsSchema)
   .query(querySchema)
   .handler(async (_request, context) => {
-    const { env } = getCloudflareContext()
+    const { env } = getWorkerEnv()
     const db = useDrizzle(env.DB)
     const { id: endpointMonitorId } = context.params
     const { limit } = context.query

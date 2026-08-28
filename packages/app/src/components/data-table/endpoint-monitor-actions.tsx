@@ -11,10 +11,7 @@ export async function handlePauseMonitoring(endpointMonitorId: string) {
   return handleToggleStatus(endpointMonitorId, false)
 }
 
-export async function handleToggleStatus(
-  endpointMonitorId: string,
-  newStatus: boolean,
-) {
+export async function handleToggleStatus(endpointMonitorId: string, newStatus: boolean) {
   if (
     !confirm(
       `Are you sure you want to ${newStatus ? "resume" : "pause"} monitoring for this endpoint?`,
@@ -36,12 +33,9 @@ export async function handleToggleStatus(
       throw new Error(`Received status code ${response.status}`)
     }
 
-    toast.success(
-      `Successfully ${newStatus ? "resumed" : "paused"} monitoring`,
-      {
-        ...DEFAULT_TOAST_OPTIONS,
-      },
-    )
+    toast.success(`Successfully ${newStatus ? "resumed" : "paused"} monitoring`, {
+      ...DEFAULT_TOAST_OPTIONS,
+    })
 
     return true
   } catch (error) {
@@ -60,12 +54,9 @@ export async function handleDeleteWebsite(endpointMonitorId: string) {
   }
 
   try {
-    const response = await fetch(
-      `/api/endpoint-monitors/${endpointMonitorId}`,
-      {
-        method: "DELETE",
-      },
-    )
+    const response = await fetch(`/api/endpoint-monitors/${endpointMonitorId}`, {
+      method: "DELETE",
+    })
 
     if (!response.ok) {
       throw new Error(`Received status code ${response.status}`)

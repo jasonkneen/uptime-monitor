@@ -7,13 +7,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 function Tabs({ className, ...props }: React.ComponentProps<typeof Root>) {
-  return (
-    <Root
-      data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
-      {...props}
-    />
-  )
+  return <Root data-slot="tabs" className={cn("flex flex-col gap-2", className)} {...props} />
 }
 
 const TabsList = React.forwardRef<
@@ -33,9 +27,7 @@ const TabsList = React.forwardRef<
       return
     }
 
-    const activeTab = tabsListRef.current.querySelector<HTMLElement>(
-      '[data-state="active"]',
-    )
+    const activeTab = tabsListRef.current.querySelector<HTMLElement>('[data-state="active"]')
     if (!activeTab) {
       return
     }

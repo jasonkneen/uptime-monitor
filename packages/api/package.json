@@ -3,28 +3,28 @@
   "version": "2.1.0",
   "description": "API workers for SolStatus uptime monitoring service",
   "keywords": [
-    "solstatus",
     "api",
     "cloudflare",
-    "workers",
-    "monitoring"
+    "monitoring",
+    "solstatus",
+    "workers"
   ],
-  "homepage": "https://github.com/unibeck/solstatus/tree/main/packages/api#readme",
+  "homepage": "https://github.com/jonbeckman/solstatus/tree/master/packages/api#readme",
   "bugs": {
-    "url": "https://github.com/unibeck/solstatus/issues"
+    "url": "https://github.com/jonbeckman/solstatus/issues"
   },
+  "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unibeck/solstatus.git",
+    "url": "git+https://github.com/jonbeckman/solstatus.git",
     "directory": "packages/api"
   },
-  "license": "MIT",
-  "type": "module",
   "files": [
     "src",
     "infra",
     "README.md"
   ],
+  "type": "module",
   "imports": {
     "@/infra/*": "./infra/*",
     "@/*": "./src/*"
@@ -36,32 +36,29 @@
     "./infra": "./infra/index.ts"
   },
   "scripts": {
-    "dev": "concurrently --kill-others --names \"EXEC,TRGR\" --prefix-colors \"blue,magenta\" \"pnpm dev:api-exec\" \"wait-on http://localhost:8787 && pnpm dev:api-trigger\"",
+    "dev": "concurrently --kill-others --names \"EXEC,TRGR\" --prefix-colors \"blue,magenta\" \"nub run dev:api-exec\" \"wait-on http://localhost:8787 && nub run dev:api-trigger\"",
     "dev:api-exec": "wrangler dev --persist-to=../infra/.wrangler/state -c ../infra/wrangler-monitor-exec.jsonc --port 8787",
     "dev:api-trigger": "wrangler dev --persist-to=../infra/.wrangler/state -c ../infra/wrangler-monitor-trigger.jsonc --port 8788",
-    "deploy:prod": "pnpm deploy:prod:api-exec && pnpm deploy:prod:api-trigger",
+    "deploy:prod": "nub run deploy:prod:api-exec && nub run deploy:prod:api-trigger",
     "deploy:prod:api-exec": "wrangler deploy --env prod -c ../infra/wrangler-monitor-exec.jsonc",
     "deploy:prod:api-trigger": "wrangler deploy --env prod -c ../infra/wrangler-monitor-trigger.jsonc",
-    "format": "biome check . --write",
     "types": "tsc"
   },
   "dependencies": {
     "@solstatus/common": "workspace:*",
-    "drizzle-orm": "catalog:",
-    "drizzle-seed": "catalog:",
-    "drizzle-zod": "catalog:",
     "diffable-objects": "^0.1.1",
-    "http-status-codes": "catalog:",
-    "zod": "catalog:"
+    "drizzle-orm": "1.0.0-rc.5-ab785fc",
+    "drizzle-seed": "1.0.0-rc.5-ab785fc",
+    "http-status-codes": "^2.3.0",
+    "zod": "4.4.3"
   },
   "devDependencies": {
-    "alchemy": "catalog:",
-    "@biomejs/biome": "catalog:",
-    "@cloudflare/workers-types": "catalog:",
-    "@types/node": "catalog:",
-    "drizzle-kit": "catalog:",
-    "typescript": "catalog:",
-    "concurrently": "catalog:",
-    "wait-on": "catalog:"
+    "@cloudflare/workers-types": "^4.20250702.0",
+    "@types/node": "^24.12.4",
+    "alchemy": "2.0.0-beta.72",
+    "concurrently": "^9.2.0",
+    "drizzle-kit": "1.0.0-rc.5-ab785fc",
+    "typescript": "7.0.2",
+    "wait-on": "^8.0.3"
   }
 }

@@ -42,9 +42,7 @@ export function NavSecondary({
                 <SidebarMenuButton asChild>
                   <a
                     href={item.url}
-                    {...(item.external
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
+                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   >
                     <item.icon />
                     <span>{item.title}</span>
@@ -70,9 +68,7 @@ export function NavSecondary({
                     id={darkModeSwitchId}
                     className="ml-auto"
                     checked={theme !== "light"}
-                    onCheckedChange={() =>
-                      setTheme(theme === "dark" ? "light" : "dark")
-                    }
+                    onCheckedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
                   />
                 ) : (
                   <Skeleton className="ml-auto h-4 w-8 rounded-full" />

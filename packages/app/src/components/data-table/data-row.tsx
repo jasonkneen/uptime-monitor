@@ -13,10 +13,7 @@ interface DataRowProps {
 export function DataRow({ row }: DataRowProps) {
   "use no memo"
   return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      className="relative"
-    >
+    <TableRow data-state={row.getIsSelected() && "selected"} className="relative">
       {row.getVisibleCells().map((cell) => (
         <TableCell key={cell.id}>
           {flexRender(cell.column.columnDef.cell, cell.getContext())}

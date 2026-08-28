@@ -44,9 +44,7 @@ export const useStatsStore = create<StatsState>((set, _get) => ({
       console.error("Error fetching dashboard stats:", error)
 
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An unknown error occurred while fetching stats"
+        error instanceof Error ? error.message : "An unknown error occurred while fetching stats"
 
       set({
         isLoading: false,

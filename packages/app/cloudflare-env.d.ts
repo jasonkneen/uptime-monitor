@@ -1,5 +1,9 @@
-declare namespace Cloudflare {
-  type AppEnv = import("@/infra/types/env").AppEnv
-	interface Env extends AppEnv {}
+import type { AppEnv } from "./infra/types/env"
+
+declare global {
+  namespace Cloudflare {
+    interface Env extends AppEnv {}
+  }
 }
-interface CloudflareEnv extends Cloudflare.Env {}
+
+export {}

@@ -109,8 +109,7 @@ export function AddEndpointMonitorDialog({
               url: endpointMonitor.url ?? "",
               checkInterval: endpointMonitor.checkInterval ?? 60,
               isRunning: endpointMonitor.isRunning ?? true,
-              expectedStatusCode:
-                endpointMonitor.expectedStatusCode ?? undefined,
+              expectedStatusCode: endpointMonitor.expectedStatusCode ?? undefined,
               alertThreshold: endpointMonitor.alertThreshold ?? 2,
             }
           : {
@@ -156,9 +155,7 @@ export function AddEndpointMonitorDialog({
       })
 
       const successStatus = isEditing ? StatusCodes.OK : StatusCodes.CREATED
-      const successMessage = isEditing
-        ? "Endpoint Monitor Updated"
-        : "Endpoint Monitor Added"
+      const successMessage = isEditing ? "Endpoint Monitor Updated" : "Endpoint Monitor Added"
       const successDescription = isEditing
         ? `${data.url} has been updated successfully.`
         : `${data.url} has been added successfully.`
@@ -191,10 +188,7 @@ export function AddEndpointMonitorDialog({
 
       form.reset()
     } catch (error) {
-      console.error(
-        `Error ${isEditing ? "updating" : "creating"} endpoint monitor:`,
-        error,
-      )
+      console.error(`Error ${isEditing ? "updating" : "creating"} endpoint monitor:`, error)
       toast.error("UNKNOWN_ERROR", {
         description: `Failed to ${isEditing ? "update" : "create"} endpoint monitor.`,
         ...DEFAULT_TOAST_OPTIONS,
@@ -223,9 +217,7 @@ export function AddEndpointMonitorDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto p-0">
         <DialogHeader className="p-6 pb-0">
-          <DialogTitle>
-            {isEditing ? "Edit Endpoint Monitor" : "Add Endpoint Monitor"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "Edit Endpoint Monitor" : "Add Endpoint Monitor"}</DialogTitle>
           <DialogDescription>
             {isEditing
               ? "Update the details for this endpoint monitor."
@@ -234,11 +226,7 @@ export function AddEndpointMonitorDialog({
         </DialogHeader>
         <div className="p-6">
           <Form {...form}>
-            <form
-              id={formId}
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-            >
+            <form id={formId} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -263,14 +251,9 @@ export function AddEndpointMonitorDialog({
                   <FormItem>
                     <FormLabel>URL</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="https://x.com/SolBeckman_"
-                        {...field}
-                      />
+                      <Input placeholder="https://x.com/SolBeckman_" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      The full URL to monitor (including https://)
-                    </FormDescription>
+                    <FormDescription>The full URL to monitor (including https://)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -283,9 +266,7 @@ export function AddEndpointMonitorDialog({
                   <FormItem>
                     <FormLabel>Check Interval</FormLabel>
                     <Select
-                      onValueChange={(value) =>
-                        field.onChange(Number.parseInt(value, 10))
-                      }
+                      onValueChange={(value) => field.onChange(Number.parseInt(value, 10))}
                       defaultValue={field.value.toString()}
                     >
                       <FormControl>
@@ -295,18 +276,13 @@ export function AddEndpointMonitorDialog({
                       </FormControl>
                       <SelectContent>
                         {checkIntervalOptions.map((option) => (
-                          <SelectItem
-                            key={option.value}
-                            value={option.value.toString()}
-                          >
+                          <SelectItem key={option.value} value={option.value.toString()}>
                             {option.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormDescription>
-                      How frequently the endpoint will be checked
-                    </FormDescription>
+                    <FormDescription>How frequently the endpoint will be checked</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -325,17 +301,15 @@ export function AddEndpointMonitorDialog({
                         {...field}
                         onChange={(event) =>
                           field.onChange(
-                            event.target.value === ""
-                              ? null
-                              : Number(event.target.value),
+                            event.target.value === "" ? null : Number(event.target.value),
                           )
                         }
                         value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormDescription>
-                      The specific HTTP status code expected (e.g., 200). Leave
-                      empty to accept any 2xx/3xx code.
+                      The specific HTTP status code expected (e.g., 200). Leave empty to accept any
+                      2xx/3xx code.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -355,9 +329,7 @@ export function AddEndpointMonitorDialog({
                         {...field}
                         onChange={(event) =>
                           field.onChange(
-                            event.target.value === ""
-                              ? null
-                              : Number(event.target.value),
+                            event.target.value === "" ? null : Number(event.target.value),
                           )
                         }
                         value={field.value ?? ""}
@@ -377,17 +349,8 @@ export function AddEndpointMonitorDialog({
           <DialogClose asChild>
             <Button variant="ghost">Cancel</Button>
           </DialogClose>
-          <Button
-            variant="primary"
-            type="submit"
-            form={formId}
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-                ? "Save Changes"
-                : "Add Endpoint Monitor"}
+          <Button variant="primary" type="submit" form={formId} disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Add Endpoint Monitor"}
           </Button>
         </DialogFooter>
       </DialogContent>

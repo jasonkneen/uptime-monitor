@@ -5,10 +5,7 @@ import { gzipSync } from "node:zlib"
 
 async function logBundleSize() {
   console.log("Logging OpenNext bundle size...")
-  const handlerPath = join(
-    process.cwd(),
-    ".open-next/server-functions/default/handler.mjs",
-  )
+  const handlerPath = join(process.cwd(), ".open-next/server-functions/default/handler.mjs")
 
   if (!existsSync(handlerPath)) {
     console.error("Handler file not found:", handlerPath)

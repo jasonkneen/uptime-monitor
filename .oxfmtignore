@@ -1,0 +1,8 @@
+**/dist/**
+**/node_modules/**
+**/.next/**
+**/.open-next/**
+**/.wrangler/**
+packages/app/src/registry/**
+packages/common/src/db/migrations/**
+nub.lock

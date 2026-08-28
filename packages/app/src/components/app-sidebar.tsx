@@ -16,7 +16,7 @@ import {
   IconSparkles,
   IconTargetArrow,
 } from "@tabler/icons-react"
-import Image from "next/image"
+import Image from "@/lib/image"
 import { useTheme } from "next-themes"
 import type * as React from "react"
 import { useState } from "react"
@@ -48,31 +48,31 @@ const data = {
         },
         {
           title: "Synthetic (blocked)",
-          url: "https://github.com/unibeck/solstatus/issues/19#issuecomment-2878393426",
+          url: "https://github.com/jonbeckman/solstatus/issues/19#issuecomment-2878393426",
           external: true,
           icon: IconAppWindow,
         },
         {
           title: "Agentic (soon)",
-          url: "https://github.com/unibeck/solstatus/issues/39",
+          url: "https://github.com/jonbeckman/solstatus/issues/39",
           external: true,
           icon: IconSparkles,
         },
         {
           title: "Heartbeat (soon)",
-          url: "https://github.com/unibeck/solstatus/issues/43",
+          url: "https://github.com/jonbeckman/solstatus/issues/43",
           external: true,
           icon: IconHeartbeat,
         },
         {
           title: "TCP (soon)",
-          url: "https://github.com/unibeck/solstatus/issues/44",
+          url: "https://github.com/jonbeckman/solstatus/issues/44",
           external: true,
           icon: IconPrismLight,
         },
         {
           title: "Other? Let me know!",
-          url: "https://github.com/unibeck/solstatus/issues",
+          url: "https://github.com/jonbeckman/solstatus/issues",
           external: true,
           icon: IconBulb,
         },
@@ -91,7 +91,7 @@ const data = {
         },
         {
           title: "Email (soon)",
-          url: "https://github.com/unibeck/solstatus/issues/47",
+          url: "https://github.com/jonbeckman/solstatus/issues/47",
           external: true,
           icon: IconMail,
         },
@@ -102,11 +102,11 @@ const data = {
     {
       title: "GitHub",
       icon: IconBrandGithub,
-      url: "https://github.com/unibeck/solstatus",
+      url: "https://github.com/jonbeckman/solstatus",
       external: true,
     },
     {
-      title: `${process.env.NEXT_PUBLIC_APP_VERSION}`,
+      title: `${import.meta.env.VITE_APP_VERSION}`,
       icon: IconDna,
     },
   ],
@@ -133,9 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { theme } = useTheme()
   const [isHovered, setIsHovered] = useState(false)
   const gifSrc =
-    theme === "dark"
-      ? "/liquid-metal-solstatus-dark.gif"
-      : "/liquid-metal-solstatus-light.gif"
+    theme === "dark" ? "/liquid-metal-solstatus-dark.gif" : "/liquid-metal-solstatus-light.gif"
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -159,9 +157,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 ) : (
                   <SolStatusLogo className="!size-8 fill-black dark:fill-white" />
                 )}
-                <span className="text-lg font-semibold font-unbounded">
-                  SolStatus
-                </span>
+                <span className="text-lg font-semibold font-unbounded">SolStatus</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

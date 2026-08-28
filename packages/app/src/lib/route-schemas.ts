@@ -11,13 +11,10 @@ export const idStringParamsSchema = z.object({
   id: z.string(),
 })
 
-export const paginationQuerySchema = (
-  orderBy = "createdAt",
-  order: "asc" | "desc" = "desc",
-) =>
+export const paginationQuerySchema = (orderBy = "createdAt", order: "asc" | "desc" = "desc") =>
   z.object({
-    pageSize: z.number({ coerce: true }).optional().default(10),
-    page: z.number({ coerce: true }).optional().default(0),
+    pageSize: z.coerce.number().optional().default(10),
+    page: z.coerce.number().optional().default(0),
     orderBy: z.string().optional().default(orderBy),
     order: z.enum(["asc", "desc"]).optional().default(order),
   })
@@ -27,12 +24,9 @@ export const paginationQuerySchema = (
  */
 export const daysQuerySchema = (defaultDays = 1) =>
   z.object({
-    days: z.number({ coerce: true }).optional().default(defaultDays),
+    days: z.coerce.number().optional().default(defaultDays),
   })
 
 export const timeRangeQuerySchema = z.object({
-  timeRange: z
-    .enum(["30m", "1h", "3h", "6h", "1d", "2d", "7d"])
-    .optional()
-    .default("1d"),
+  timeRange: z.enum(["30m", "1h", "3h", "6h", "1d", "2d", "7d"]).optional().default("1d"),
 })

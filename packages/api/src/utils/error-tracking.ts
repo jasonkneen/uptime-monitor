@@ -2,7 +2,6 @@ import type {
   endpointMonitorsPatchSchema,
   endpointMonitorsSelectSchema,
 } from "@solstatus/common/db"
-import type { schema } from "@solstatus/common/db/schema"
 import { EndpointMonitorsTable } from "@solstatus/common/db/schema"
 import { endpointSignature } from "@solstatus/common/utils"
 import { eq } from "drizzle-orm"
@@ -16,7 +15,7 @@ export async function handleFailureTracking(
   status: number,
   errorMessage: string,
   endpointMonitor: z.infer<typeof endpointMonitorsSelectSchema>,
-  db: DrizzleD1Database<typeof schema>,
+  db: DrizzleD1Database,
   env: MonitorExecEnv,
 ) {
   if (isExpectedStatus) {
@@ -38,10 +37,7 @@ export async function handleFailureTracking(
     }
 
     // Send alert if this is the second consecutive failure and no alert has been sent yet
-    if (
-      consecutiveFailures >= endpointMonitor.alertThreshold &&
-      !endpointMonitor.activeAlert
-    ) {
+    if (consecutiveFailures >= endpointMonitor.alertThreshold && !endpointMonitor.activeAlert) {
       await sendAlert(status, errorMessage, endpointMonitor, env)
       endpointMonitorPatch.activeAlert = true
     }
@@ -88,14 +84,9 @@ export async function sendAlert(
         `${endpointSignature(endpointMonitor)}: alert sent successfully. RequestId: ${result.requestId}`,
       )
     } else {
-      console.error(
-        `${endpointSignature(endpointMonitor)}: failed to send alert`,
-      )
+      console.error(`${endpointSignature(endpointMonitor)}: failed to send alert`)
     }
   } catch (error) {
-    console.error(
-      `${endpointSignature(endpointMonitor)}: error sending alert.`,
-      error,
-    )
+    console.error(`${endpointSignature(endpointMonitor)}: error sending alert.`, error)
   }
 }

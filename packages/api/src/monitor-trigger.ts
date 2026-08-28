@@ -1,10 +1,7 @@
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers"
 import { takeUniqueOrThrow, useDrizzle } from "@solstatus/common/db"
 import { EndpointMonitorsTable } from "@solstatus/common/db/schema"
-import {
-  endpointSignature,
-  MonitorTriggerNotInitializedError,
-} from "@solstatus/common/utils"
+import { endpointSignature, MonitorTriggerNotInitializedError } from "@solstatus/common/utils"
 import { state } from "diffable-objects"
 import { eq } from "drizzle-orm"
 import { ReasonPhrases, StatusCodes } from "http-status-codes"
@@ -32,9 +29,7 @@ export interface InitPayload {
 /**
  * Durable Object that triggers checks for both Endpoint Monitors and Synthetic Monitors.
  */
-export class MonitorTrigger extends DurableObject {
-  declare readonly env: MonitorTriggerEnv
-
+export class MonitorTrigger extends DurableObject<MonitorTriggerEnv> {
   #state = state<MonitorState>(this.ctx, "state", {
     monitorId: null,
     monitorType: null,
@@ -50,13 +45,8 @@ export class MonitorTrigger extends DurableObject {
     )
 
     // Validate payload based on type
-    if (
-      payload.monitorType === "synthetic" &&
-      (!payload.timeoutSeconds || !payload.runtime)
-    ) {
-      throw new Error(
-        "Synthetic monitors require timeoutSeconds and runtime during init.",
-      )
+    if (payload.monitorType === "synthetic" && (!payload.timeoutSeconds || !payload.runtime)) {
+      throw new Error("Synthetic monitors require timeoutSeconds and runtime during init.")
     }
 
     // Initialize state
@@ -112,9 +102,7 @@ export class MonitorTrigger extends DurableObject {
     // Should only be called for synthetic type
     const timeoutSeconds = this.#state.timeoutSeconds
     if (this.#state.monitorType !== "synthetic" || !timeoutSeconds) {
-      throw new MonitorTriggerNotInitializedError(
-        "Timeout not set or not applicable.",
-      )
+      throw new MonitorTriggerNotInitializedError("Timeout not set or not applicable.")
     }
     return timeoutSeconds
   }
@@ -123,21 +111,19 @@ export class MonitorTrigger extends DurableObject {
     // Should only be called for synthetic type
     const runtime = this.#state.runtime
     if (this.#state.monitorType !== "synthetic" || !runtime) {
-      throw new MonitorTriggerNotInitializedError(
-        "Runtime not set or not applicable.",
-      )
+      throw new MonitorTriggerNotInitializedError("Runtime not set or not applicable.")
     }
     return runtime
   }
 
   // Updated alarm method
-  async alarm(alarmInfo: { retryCount: number; isRetry: boolean }) {
+  async alarm(alarmInfo?: { retryCount: number; isRetry: boolean }) {
     const monitorId = await this.getMonitorId()
     const monitorType = await this.getMonitorType()
     const checkInterval = await this.getCheckInterval()
 
     // Log if this is a retry
-    if (alarmInfo.isRetry) {
+    if (alarmInfo?.isRetry) {
       console.log(
         `Received an alarm retry #${alarmInfo.retryCount} for [${monitorId}]. Not retrying.`,
       )
@@ -152,13 +138,7 @@ export class MonitorTrigger extends DurableObject {
       runtime = await this.getRuntime()
     }
 
-    await this.triggerCheck(
-      monitorId,
-      monitorType,
-      checkInterval,
-      timeoutSeconds,
-      runtime,
-    )
+    await this.triggerCheck(monitorId, monitorType, checkInterval, timeoutSeconds, runtime)
   }
 
   // Updated triggerCheck method
@@ -188,25 +168,19 @@ export class MonitorTrigger extends DurableObject {
 
     // Schedule the next check regardless of delegation outcome
     this.ctx.storage.setAlarm(Date.now() + checkInterval * 1000)
-    console.log(
-      `Scheduled next check for [${monitorId}] in ${checkInterval} seconds`,
-    )
+    console.log(`Scheduled next check for [${monitorId}] in ${checkInterval} seconds`)
   }
 
   // updateCheckInterval might need to become updateConfig for synthetics
   async updateCheckInterval(checkInterval: number) {
     const monitorId = await this.getMonitorId()
-    console.log(
-      `Updating check interval for [${monitorId}] to [${checkInterval}]`,
-    )
+    console.log(`Updating check interval for [${monitorId}] to [${checkInterval}]`)
 
     this.#state.checkInterval = checkInterval
     // Reschedule alarm immediately with new interval
     this.ctx.storage.setAlarm(Date.now() + checkInterval * 1000)
 
-    console.log(
-      `Updated check interval for [${monitorId}] to [${checkInterval}]`,
-    )
+    console.log(`Updated check interval for [${monitorId}] to [${checkInterval}]`)
   }
 
   // Updated pause method (basic type handling)
@@ -220,9 +194,7 @@ export class MonitorTrigger extends DurableObject {
     const db = useDrizzle(this.env.DB)
     try {
       if (monitorType === "synthetic") {
-        console.error(
-          "Synthetic monitors are not supported yet. Skipping pause.",
-        )
+        console.error("Synthetic monitors are not supported yet. Skipping pause.")
       } else {
         const endpointMonitor = await db
           .update(EndpointMonitorsTable)
@@ -230,15 +202,10 @@ export class MonitorTrigger extends DurableObject {
           .where(eq(EndpointMonitorsTable.id, monitorId))
           .returning()
           .then(takeUniqueOrThrow)
-        console.log(
-          `Paused Endpoint Monitor ${endpointSignature(endpointMonitor)} in DB`,
-        )
+        console.log(`Paused Endpoint Monitor ${endpointSignature(endpointMonitor)} in DB`)
       }
     } catch (error) {
-      console.error(
-        `Error updating monitor status to paused in DB for [${monitorId}]:`,
-        error,
-      )
+      console.error(`Error updating monitor status to paused in DB for [${monitorId}]:`, error)
       // Continue pausing the DO alarm even if DB update fails
     }
   }
@@ -258,9 +225,7 @@ export class MonitorTrigger extends DurableObject {
     const db = useDrizzle(this.env.DB)
     try {
       if (monitorType === "synthetic") {
-        console.error(
-          "Synthetic monitors are not supported yet. Skipping resume.",
-        )
+        console.error("Synthetic monitors are not supported yet. Skipping resume.")
       } else {
         const endpointMonitor = await db
           .update(EndpointMonitorsTable)
@@ -268,15 +233,10 @@ export class MonitorTrigger extends DurableObject {
           .where(eq(EndpointMonitorsTable.id, monitorId))
           .returning()
           .then(takeUniqueOrThrow)
-        console.log(
-          `Resumed Endpoint Monitor ${endpointSignature(endpointMonitor)} in DB`,
-        )
+        console.log(`Resumed Endpoint Monitor ${endpointSignature(endpointMonitor)} in DB`)
       }
     } catch (error) {
-      console.error(
-        `Error updating monitor status to resumed in DB for [${monitorId}]:`,
-        error,
-      )
+      console.error(`Error updating monitor status to resumed in DB for [${monitorId}]:`, error)
       // Continue resuming the DO alarm even if DB update fails
     }
   }
@@ -291,9 +251,7 @@ export class MonitorTrigger extends DurableObject {
   }
 }
 
-export default class MonitorTriggerRPC extends WorkerEntrypoint {
-  declare readonly env: MonitorTriggerEnv
-
+export default class MonitorTriggerRPC extends WorkerEntrypoint<MonitorTriggerEnv> {
   async fetch(_request: Request) {
     //Use service or RPC binding to work with the Monitor Durable Object
     return new Response(
@@ -306,44 +264,34 @@ export default class MonitorTriggerRPC extends WorkerEntrypoint {
   // Monitor DO RPC methods
   //////////////////////////////////////////////////////////////////////
 
+  private getTriggerStub(monitorId: string): DurableObjectStub<MonitorTrigger> {
+    const id = this.env.MONITOR_TRIGGER.idFromName(monitorId)
+    return this.env.MONITOR_TRIGGER.get(id) as DurableObjectStub<MonitorTrigger>
+  }
+
   // Updated init RPC method
   async init(payload: InitPayload) {
-    const id = this.env.MONITOR_TRIGGER.idFromName(payload.monitorId)
-    const stub: DurableObjectStub<MonitorTrigger> =
-      this.env.MONITOR_TRIGGER.get(id)
-    await stub.init(payload)
+    await this.getTriggerStub(payload.monitorId).init(payload)
   }
 
   // Updated updateCheckInterval RPC method
   async updateCheckInterval(monitorId: string, checkInterval: number) {
-    const id = this.env.MONITOR_TRIGGER.idFromName(monitorId)
-    const stub: DurableObjectStub<MonitorTrigger> =
-      this.env.MONITOR_TRIGGER.get(id)
     // TODO: If updating more config for synthetics, this needs a new payload
-    await stub.updateCheckInterval(checkInterval)
+    await this.getTriggerStub(monitorId).updateCheckInterval(checkInterval)
   }
 
   // Updated pauseDo RPC method
   async pauseDo(monitorId: string) {
-    const id = this.env.MONITOR_TRIGGER.idFromName(monitorId)
-    const stub: DurableObjectStub<MonitorTrigger> =
-      this.env.MONITOR_TRIGGER.get(id)
-    await stub.pause()
+    await this.getTriggerStub(monitorId).pause()
   }
 
   // Updated resumeDo RPC method
   async resumeDo(monitorId: string) {
-    const id = this.env.MONITOR_TRIGGER.idFromName(monitorId)
-    const stub: DurableObjectStub<MonitorTrigger> =
-      this.env.MONITOR_TRIGGER.get(id)
-    await stub.resume()
+    await this.getTriggerStub(monitorId).resume()
   }
 
   // Updated deleteDo RPC method
   async deleteDo(monitorId: string) {
-    const id = this.env.MONITOR_TRIGGER.idFromName(monitorId)
-    const stub: DurableObjectStub<MonitorTrigger> =
-      this.env.MONITOR_TRIGGER.get(id)
-    await stub.delete()
+    await this.getTriggerStub(monitorId).delete()
   }
 }

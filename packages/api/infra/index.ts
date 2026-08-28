@@ -2,60 +2,56 @@ import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { DBResource } from "@solstatus/common/infra"
 import type { InfraMetadata } from "@solstatus/common/utils/types"
-import alchemy, { type } from "alchemy"
-import { DurableObjectNamespace, Worker } from "alchemy/cloudflare"
-import type {
-  MonitorExec,
-  MonitorTrigger,
-  MonitorTriggerRPC,
-} from "../src/index"
+import * as Cloudflare from "alchemy/Cloudflare"
+import * as Effect from "effect/Effect"
 
-export async function createApi(
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+export function createApi(
   resPrefix: string,
   stage: string,
   db: DBResource,
   cloudflareAccountId: string,
 ) {
-  const infraMetadata = {
-    cloudflareAccountId: cloudflareAccountId,
-    monitorExecName: `${resPrefix}-monitor-exec`,
-    monitorTriggerName: `${resPrefix}-monitor-trigger`,
-  }
-
-  const monitorExecWorker = await createMonitorExecWorker(
-    infraMetadata,
-    stage,
-    db,
-  )
-  const monitorTriggerWorker = await createMonitorTriggerWorker(
-    infraMetadata,
-    db,
-    monitorExecWorker,
-  )
-
-  return {
-    monitorExecWorker,
-    monitorTriggerWorker,
-  }
+  return Effect.gen(function* () {
+    const infraMetadata = {
+      cloudflareAccountId,
+      monitorExecName: `${resPrefix}-monitor-exec`,
+      monitorTriggerName: `${resPrefix}-monitor-trigger`,
+    }
+    const monitorExecWorker = yield* createMonitorExecWorker(infraMetadata, stage, db)
+    const monitorTriggerWorker = yield* createMonitorTriggerWorker(
+      infraMetadata,
+      db,
+      monitorExecWorker,
+    )
+    return {
+      monitorExecWorker,
+      monitorTriggerWorker,
+    }
+  })
 }
 
-async function createMonitorExecWorker(
+export function createMonitorExecWorker(
   infraMetadata: InfraMetadata,
   stage: string,
   db: DBResource,
 ) {
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = dirname(__filename)
   const entrypoint = resolve(__dirname, "../src/monitor-exec.ts")
-
-  return await Worker(infraMetadata.monitorExecName, {
+  return Cloudflare.Worker("monitor-exec", {
     name: infraMetadata.monitorExecName,
-    adopt: true,
-    entrypoint: entrypoint,
-    rpc: type<MonitorExec>,
-    bindings: {
+    main: entrypoint,
+    compatibility: {
+      date: "2026-07-21",
+      flags: ["nodejs_compat"],
+    },
+    observability: {
+      enabled: true,
+    },
+    env: {
       DB: db,
-      OPSGENIE_API_KEY: alchemy.secret(process.env.OPSGENIE_API_KEY || ""),
+      OPSGENIE_API_KEY: process.env.OPSGENIE_API_KEY || "",
       APP_ENV: stage,
       MONITOR_EXEC_NAME: infraMetadata.monitorExecName,
       MONITOR_TRIGGER_NAME: infraMetadata.monitorTriggerName,
@@ -63,40 +59,38 @@ async function createMonitorExecWorker(
     },
   })
 }
-export type MonitorExecWorkerResource = Awaited<
-  ReturnType<typeof createMonitorExecWorker>
->
 
-async function createMonitorTriggerWorker(
+export function createMonitorTriggerWorker(
   infraMetadata: InfraMetadata,
   db: DBResource,
-  monitorExecWorker: MonitorExecWorkerResource,
+  monitorExecWorker: Effect.Success<ReturnType<typeof createMonitorExecWorker>>,
 ) {
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = dirname(__filename)
   const entrypoint = resolve(__dirname, "../src/monitor-trigger.ts")
-
-  return await Worker(infraMetadata.monitorTriggerName, {
+  const monitorTriggerDo = Cloudflare.DurableObject("monitor-trigger-do", {
+    className: "MonitorTrigger",
+  })
+  return Cloudflare.Worker("monitor-trigger", {
     name: infraMetadata.monitorTriggerName,
-    adopt: true,
-    entrypoint: entrypoint,
-    rpc: type<MonitorTriggerRPC>,
-    bindings: {
+    main: entrypoint,
+    compatibility: {
+      date: "2026-07-21",
+      flags: ["nodejs_compat"],
+    },
+    observability: {
+      enabled: true,
+    },
+    env: {
       DB: db,
       MONITOR_EXEC: monitorExecWorker,
-      MONITOR_TRIGGER: new DurableObjectNamespace<MonitorTrigger>(
-        `${infraMetadata.monitorTriggerName}-do`,
-        {
-          className: "MonitorTrigger",
-          sqlite: true,
-        },
-      ),
+      MONITOR_TRIGGER: monitorTriggerDo,
       MONITOR_EXEC_NAME: infraMetadata.monitorExecName,
       MONITOR_TRIGGER_NAME: infraMetadata.monitorTriggerName,
       CLOUDFLARE_ACCOUNT_ID: infraMetadata.cloudflareAccountId,
     },
   })
 }
-export type MonitorTriggerWorkerResource = Awaited<
+
+export type MonitorExecWorkerResource = Effect.Success<ReturnType<typeof createMonitorExecWorker>>
+export type MonitorTriggerWorkerResource = Effect.Success<
   ReturnType<typeof createMonitorTriggerWorker>
 >

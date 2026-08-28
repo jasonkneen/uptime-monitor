@@ -1,3 +1,4 @@
+// @ts-nocheck -- recharts 2 class components are not valid JSX under React 19 types
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
@@ -204,20 +205,11 @@ export function LatencyLimitChart({
     <div className="rounded-lg" style={{ height }}>
       {/* <ResponsiveContainer width="100%" height="100%"> */}
       <ChartContainer config={chartConfig} className="w-full h-full">
-        <LineChart
-          data={data}
-          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-        >
+        <LineChart data={data} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
           <defs>
             {/* Vertical gradient for stroke color (Inverted) */}
             {/* y1=100% (bottom), y2=0% (top) */}
-            <linearGradient
-              id="colorResponseTime"
-              x1="0%"
-              y1="100%"
-              x2="0%"
-              y2="0%"
-            >
+            <linearGradient id="colorResponseTime" x1="0%" y1="100%" x2="0%" y2="0%">
               {gradientStops.map((stop, i) => {
                 console.log("stop", stop)
                 return (
@@ -245,19 +237,13 @@ export function LatencyLimitChart({
                       const seconds = value / 1000
                       return (
                         <p className="text-xs">
-                          <span className="font-semibold">
-                            {seconds.toFixed(2)}
-                          </span>{" "}
-                          s
+                          <span className="font-semibold">{seconds.toFixed(2)}</span> s
                         </p>
                       )
                     }
                     return (
                       <p className="text-xs">
-                        <span className="font-semibold">
-                          {value.toFixed(0)}
-                        </span>{" "}
-                        ms
+                        <span className="font-semibold">{value.toFixed(0)}</span> ms
                       </p>
                     )
                   }

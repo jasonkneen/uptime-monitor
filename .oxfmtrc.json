@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.open-next/**",
+    "**/.wrangler/**",
+    "**/.alchemy/**",
+    "**/.output/**",
+    "**/*.gen.ts",
+    "nub.lock",
+    "packages/app/src/registry/**",
+    "packages/common/src/db/migrations/**",
+    "packages/app/cloudflare-env.d.ts",
+    "**/*.md",
+    "**/*.yaml",
+    "**/*.yml"
+  ],
+  "arrowParens": "always",
+  "semi": false
+}

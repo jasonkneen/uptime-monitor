@@ -1,7 +1,19 @@
-import type {
-  MonitorExecWorkerResource,
-  MonitorTriggerWorkerResource,
-} from "../index"
+export interface MonitorExecEnv {
+  DB: D1Database
+  OPSGENIE_API_KEY: string
+  APP_ENV: string
+  MONITOR_EXEC_NAME: string
+  MONITOR_TRIGGER_NAME: string
+  CLOUDFLARE_ACCOUNT_ID: string
+}
 
-export type MonitorExecEnv = MonitorExecWorkerResource["Env"]
-export type MonitorTriggerEnv = MonitorTriggerWorkerResource["Env"]
+export interface MonitorTriggerEnv {
+  DB: D1Database
+  MONITOR_EXEC: {
+    executeCheck(endpointMonitorId: string): Promise<void> | void
+  }
+  MONITOR_TRIGGER: DurableObjectNamespace
+  MONITOR_EXEC_NAME: string
+  MONITOR_TRIGGER_NAME: string
+  CLOUDFLARE_ACCOUNT_ID: string
+}

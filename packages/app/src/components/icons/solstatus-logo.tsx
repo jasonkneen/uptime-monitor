@@ -3,11 +3,7 @@ interface SolStatusLogoProps extends React.SVGProps<SVGSVGElement> {
   height?: number
 }
 
-const SolStatusLogo = ({
-  width = 24,
-  height = 24,
-  ...props
-}: SolStatusLogoProps) => (
+const SolStatusLogo = ({ width = 24, height = 24, ...props }: SolStatusLogoProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}

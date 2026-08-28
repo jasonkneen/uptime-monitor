@@ -6,11 +6,5 @@
     "types": ["node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "./packages/common" },
-    { "path": "./packages/infra" },
-    { "path": "./packages/api" },
-    { "path": "./packages/app" }
-  ]
+  "exclude": ["node_modules", "dist"]
 }

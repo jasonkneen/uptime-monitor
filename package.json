@@ -3,70 +3,112 @@
   "version": "2.1.0",
   "description": "Self host a low-cost, globally-distributed uptime monitoring service on Cloudflare",
   "keywords": [
-    "solstatus",
-    "uptime",
+    "cloudflare",
     "monitoring",
-    "cloudflare"
+    "solstatus",
+    "uptime"
   ],
-  "homepage": "https://github.com/unibeck/solstatus#readme",
+  "homepage": "https://github.com/jonbeckman/solstatus#readme",
   "bugs": {
-    "url": "https://github.com/unibeck/solstatus/issues"
+    "url": "https://github.com/jonbeckman/solstatus/issues"
   },
+  "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unibeck/solstatus.git"
+    "url": "git+https://github.com/jonbeckman/solstatus.git"
   },
-  "license": "MIT",
-  "type": "module",
-  "packageManager": "pnpm@10.12.1",
   "bin": {
     "solstatus": "./src/index.ts"
   },
+  "workspaces": [
+    "packages/*"
+  ],
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
   "imports": {
     "@/*": "./src/*"
   },
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": [
-    "src",
-    "README.md",
-    "LICENSE"
-  ],
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "prepublishOnly": "pnpm run build",
     "cli": "tsx ./src/index.ts",
-    "dev": "concurrently --kill-others --names \"API,APP\" --prefix-colors \"bgWhite,bgWhiteBright\" \"pnpm dev:api\" \"wait-on http://localhost:8788 && pnpm dev:app\"",
-    "dev:app": "pnpm run --filter '@solstatus/app' dev",
-    "dev:api": "pnpm run --filter '@solstatus/api' dev",
-    "db:setup": "pnpm run --filter '@solstatus/infra' db:setup",
-    "deploy:prod": "pnpm deploy:prod:api && pnpm deploy:prod:app",
-    "deploy:prod:app": "pnpm run --filter '@solstatus/app' deploy:prod",
-    "deploy:prod:api": "pnpm run --filter '@solstatus/api' deploy:prod",
-    "format": "biome check . --write",
+    "dev": "concurrently --kill-others --names \"API,APP\" --prefix-colors \"bgWhite,bgWhiteBright\" \"nub run dev:api\" \"wait-on http://localhost:8788 && nub run dev:app\"",
+    "dev:app": "nub run --filter '@solstatus/app' dev",
+    "dev:app:mock": "nub run --filter '@solstatus/app' dev:mock",
+    "dev:api": "nub run --filter '@solstatus/api' dev",
+    "db:setup": "nub run --filter '@solstatus/infra' db:setup",
+    "deploy:prod": "nub run deploy:prod:api && nub run deploy:prod:app",
+    "deploy:prod:app": "nub run --filter '@solstatus/app' deploy:prod",
+    "deploy:prod:api": "nub run --filter '@solstatus/api' deploy:prod",
+    "typecheck": "tsc --pretty false --noEmit --incremental false && tsc --pretty false --noEmit --incremental false -p packages/common && tsc --pretty false --noEmit --incremental false -p packages/api && tsc --pretty false --noEmit --incremental false -p packages/app && tsc --pretty false --noEmit --incremental false -p packages/infra",
+    "lint": "NODE_OPTIONS='--import tsx' oxlint",
+    "lint:fix": "NODE_OPTIONS='--import tsx' oxlint --fix",
+    "format": "oxfmt --check .",
+    "format:fix": "oxfmt .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "tegami": "tsx scripts/tegami.mts",
     "clean": "rm -rf ./node_modules/ ./packages/*/node_modules/ ./dist/ ./packages/*/dist/",
     "clean:builds": "rm -rf ./dist/ ./packages/*/dist/",
-    "build": "tsc --build",
-    "types": "tsc",
-    "types:each": "pnpm run --filter '@solstatus/common' types && pnpm run --filter '@solstatus/api' types && pnpm run --filter '@solstatus/app' types && pnpm run --filter '@solstatus/infra' types"
+    "build": "nub run typecheck",
+    "types": "nub run typecheck",
+    "types:each": "nub run --filter '@solstatus/common' types && nub run --filter '@solstatus/api' types && nub run --filter '@solstatus/app' types && nub run --filter '@solstatus/infra' types"
   },
   "dependencies": {
-    "@effect/cli": "^0.66.4",
-    "@effect/platform-node": "^0.88.6",
+    "@effect/platform-node": "4.0.0-beta.107",
     "@solstatus/infra": "workspace:*",
-    "dotenv": "catalog:",
-    "effect": "^3.16.11"
+    "alchemy": "2.0.0-beta.72",
+    "dotenv": "16.5.0",
+    "effect": "4.0.0-beta.107"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
-    "@cloudflare/workers-types": "catalog:",
-    "@types/node": "catalog:",
-    "concurrently": "catalog:",
-    "release-please": "^17.1.1",
-    "tsx": "catalog:",
-    "typescript": "catalog:",
-    "wait-on": "catalog:",
-    "wrangler": "catalog:"
+    "@cloudflare/workers-types": "^4.20250702.0",
+    "@mpsuesser/oxlint-plugin-effect": "0.2.2",
+    "@oxlint/plugins": "1.79.0",
+    "@types/node": "^24.12.4",
+    "anti-slop": "github:dmmulroy/anti-slop",
+    "concurrently": "^9.2.0",
+    "oxfmt": "^0.49.0",
+    "oxlint": "1.79.0",
+    "tegami": "1.3.5",
+    "tsx": "^4.20.3",
+    "typescript": "7.0.2",
+    "vitest": "^3.2.4",
+    "wait-on": "^8.0.3",
+    "wrangler": "^4.22.0"
+  },
+  "overrides": {
+    "@effect/platform-node": "4.0.0-beta.107",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "alchemy": "2.0.0-beta.72",
+    "drizzle-kit": "1.0.0-rc.5-ab785fc",
+    "drizzle-orm": "1.0.0-rc.5-ab785fc",
+    "effect": "4.0.0-beta.107",
+    "zod": "4.4.3"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "nub",
+      "version": "0.4.11",
+      "onFail": "warn"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "24.15.0"
+    }
+  },
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "packageManager": "nub@0.4.11",
+  "allowBuilds": {
+    "esbuild": true,
+    "workerd": true
   }
 }

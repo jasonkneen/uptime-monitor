@@ -14,7 +14,7 @@ export enum AppEnvID {
   PROD = "prod",
 }
 
-// biome-ignore lint/suspicious/noEmptyInterface: This app env concept is not used yet
+// Empty until app-env metadata is used.
 export interface AppEnvMetadata {}
 
 const AppEnvs: { [value in AppEnvID]: AppEnvMetadata } = {
@@ -24,8 +24,8 @@ const AppEnvs: { [value in AppEnvID]: AppEnvMetadata } = {
 }
 
 export function getAppEnvID(): AppEnvID {
-  console.log(`Getting app env ID for [${process.env.NEXT_PUBLIC_APP_ENV}]`)
-  return getAppEnvIDFromStr(process.env.NEXT_PUBLIC_APP_ENV || "dev")
+  console.log(`Getting app env ID for [${process.env.VITE_APP_ENV ?? process.env.STAGE}]`)
+  return getAppEnvIDFromStr(process.env.VITE_APP_ENV || process.env.STAGE || "dev")
 }
 
 export function getAppEnvIDFromStr(appEnvStr: string): AppEnvID {

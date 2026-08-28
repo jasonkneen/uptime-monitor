@@ -9,32 +9,32 @@
   "minify": true,
   "workers_dev": false,
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "vars": {
-    "APP_ENV": "dev"
+    "APP_ENV": "dev",
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "solstatus-local",
       "database_id": "solstatus-local",
-      "migrations_dir": "src/db/migrations"
-    }
+      "migrations_dir": "src/db/migrations",
+    },
   ],
   "env": {
     "prod": {
       "vars": {
-        "APP_ENV": "prod"
+        "APP_ENV": "prod",
       },
       "d1_databases": [
         {
           "binding": "DB",
           "database_name": "solstatus-prod",
           "database_id": "37c24e7a-7bb0-47c7-87e9-5f1f5a4e237d",
-          "migrations_dir": "src/db/migrations"
-        }
-      ]
-    }
-  }
+          "migrations_dir": "src/db/migrations",
+        },
+      ],
+    },
+  },
 }

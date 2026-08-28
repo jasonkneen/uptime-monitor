@@ -2,11 +2,11 @@
 > This project has been archived. The original purpose was to run affordable URL checks at scale, though now Checkly offers 
 > affordable basic checks with more integrations and features.
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/unibeck/solstatus)
-![GitHub](https://img.shields.io/github/license/unibeck/solstatus)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/unibeck/solstatus)
-![GitHub contributors](https://img.shields.io/github/contributors/unibeck/solstatus)
-![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/unibeck/solstatus/latest)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jonbeckman/solstatus)
+![GitHub](https://img.shields.io/github/license/jonbeckman/solstatus)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/jonbeckman/solstatus)
+![GitHub contributors](https://img.shields.io/github/contributors/jonbeckman/solstatus)
+![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/jonbeckman/solstatus/latest)
 
 # SolStatus
 
@@ -18,23 +18,25 @@ An uptime monitoring service that is easy and cheap to run at scale. Create endp
 
 ```bash
 # Install dependencies
-pnpm i
+nub install
 
 # Run the CLI
-pnpm cli --help
+nub run cli --help
 ```
+
+This repository requires Node.js 24.15.0 and Nub 0.4.11.
 
 ### Common Commands
 
 ```bash
 # Deploy infrastructure
-pnpm cli --fqdn uptime.example.com
+nub run cli -- --fqdn uptime.example.com
 
 # Deploy to production
-pnpm cli --fqdn uptime.example.com --stage prod
+nub run cli -- --fqdn uptime.example.com --stage prod
 
 # Destroy infrastructure
-pnpm cli --fqdn uptime.example.com --phase destroy
+nub run cli -- --fqdn uptime.example.com --phase destroy
 ```
 
 ## Local Dev
@@ -48,13 +50,13 @@ First, copy the `./packages/infra/.dev.vars.example` file to `./packages/infra/.
 Then, run the following command to confirm you're using the correct CF account:
 and run to confirm you're using the correct CF account:
 ```sh
-pnpm exec wrangler whoami
+nub exec wrangler whoami
 ```
 
 Run the migrations and (optionally) seed the database:
 ```sh
 # this is a convenience script that runs db:touch, db:generate, db:migrate, and db:seed
-pnpm db:setup
+nub run db:setup
 ```
 
 ### Dev
@@ -62,45 +64,39 @@ This repo uses multiple workers, each split into their own workspace. To run eve
 
 ```sh
 # Start both the API (monitor workers) and the Next.js app
-pnpm dev
+nub run dev
 ```
 
 If you need to run components separately:
 
 ```sh
 # Run just the API (includes both executor and trigger workers)
-pnpm dev:api
+nub run dev:api
 
 # Run just the Next.js app
-pnpm dev:app
+nub run dev:app
 
 # Run the API executor worker
-pnpm dev:api-exec
+nub run --filter '@solstatus/api' dev:api-exec
 
 # Run the API trigger worker
-pnpm dev:api-trigger
+nub run --filter '@solstatus/api' dev:api-trigger
 ```
 
 ### Deployment
 
 To deploy the entire application:
 ```sh
-pnpm run deploy
+nub run deploy:prod
 ```
 
 To deploy components separately:
 ```sh
 # Deploy just the Next.js app
-pnpm deploy:app
+nub run deploy:prod:app
 
 # Deploy just the API workers
-pnpm deploy:api
-
-# Deploy the API executor worker
-pnpm deploy:api-exec
-
-# Deploy the API trigger worker
-pnpm deploy:api-trigger
+nub run deploy:prod:api
 ```
 
 ### Maintenance
@@ -108,8 +104,8 @@ Update dependencies
 
 Dependabot automatically creates pull requests for dependency updates weekly. For manual updates:
 ```sh
-pnpm exec ncu -t minor -u
-pnpm i
+nub exec ncu -t minor -u
+nub install
 ```
 
 ## Database Management
@@ -125,14 +121,15 @@ This repository uses Dependabot to keep dependencies up to date:
 - PR limits are set to avoid overwhelming with dependency updates
 
 ### npm Publishing
-Packages are automatically published to npm when release-please creates tags:
+Tegami versions and publishes the npm packages after Validate succeeds on `master`:
 - `solstatus` - Main CLI package
 - `@solstatus/common` - Shared utilities and schemas
 - `@solstatus/api` - API workers
 - `@solstatus/app` - Web application
 - `@solstatus/infra` - Infrastructure tools
 
-To enable npm publishing:
+See [docs/releasing.md](./docs/releasing.md). To enable npm publishing:
 1. Create an npm access token at https://www.npmjs.com/
 2. Add it as a GitHub secret named `NPM_TOKEN`
-3. Release-please will create tags that trigger the publish workflow
+3. Enable **Allow GitHub Actions to create and approve pull requests**
+4. Create the `release:none` label for toolchain-only pull requests
