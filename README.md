@@ -1,7 +1,3 @@
-> [!IMPORTANT]
-> This project has been archived. The original purpose was to run affordable URL checks at scale, though now Checkly offers 
-> affordable basic checks with more integrations and features.
-
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jonbeckman/solstatus)
 ![GitHub](https://img.shields.io/github/license/jonbeckman/solstatus)
 ![GitHub release (with filter)](https://img.shields.io/github/v/release/jonbeckman/solstatus)
