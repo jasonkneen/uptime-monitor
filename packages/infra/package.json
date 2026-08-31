@@ -66,6 +66,6 @@
     "drizzle-seed": "1.0.0-rc.5-ab785fc",
     "typescript": "7.0.2",
     "wrangler": "^4.22.0",
-    "zod": "4.4.3"
+    "zod": "4.5.4"
   }
 }
