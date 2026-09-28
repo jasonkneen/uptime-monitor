@@ -36,7 +36,7 @@ export function createApi(
 
 export function createMonitorExecWorker(
   infraMetadata: InfraMetadata,
-  stage: string,
+  _stage: string,
   db: DBResource,
 ) {
   const entrypoint = resolve(__dirname, "../src/monitor-exec.ts")
@@ -53,7 +53,6 @@ export function createMonitorExecWorker(
     env: {
       DB: db,
       OPSGENIE_API_KEY: Redacted.make(process.env.OPSGENIE_API_KEY || ""),
-      APP_ENV: stage,
       MONITOR_EXEC_NAME: infraMetadata.monitorExecName,
       MONITOR_TRIGGER_NAME: infraMetadata.monitorTriggerName,
       CLOUDFLARE_ACCOUNT_ID: infraMetadata.cloudflareAccountId,
@@ -84,9 +83,6 @@ export function createMonitorTriggerWorker(
       DB: db,
       MONITOR_EXEC: monitorExecWorker,
       MONITOR_TRIGGER: monitorTriggerDo,
-      MONITOR_EXEC_NAME: infraMetadata.monitorExecName,
-      MONITOR_TRIGGER_NAME: infraMetadata.monitorTriggerName,
-      CLOUDFLARE_ACCOUNT_ID: infraMetadata.cloudflareAccountId,
     },
   })
 }
